@@ -1,0 +1,56 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background-color: white;
+}
+
+.createTextRow {
+    height: 40px;
+    padding: 12px;
+}
+
+.divider{
+    height: 1px;
+    background-color: #b9b9b9
+}
+.time_div{
+    width: 80vw;
+    height: 15px;
+    margin-bottom: 20px;
+    margin-left: 15px;
+}
+.text_div{
+    background: #ecf5ff;
+    width: 80vw;
+    height: 40px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    margin-left: 15px;
+}
+.text_content_div{
+    width: 70vw;
+    padding: 10px;
+    border-radius: 4px;
+    float: left
+}
+.text_button_div{
+    width:10vw ;
+    float: right;
+}
+
+#components-back-top-demo-custom .ant-back-top {
+    bottom: 100px;
+}
+#components-back-top-demo-custom .ant-back-top-inner {
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    border-radius: 4px;
+    background-color: #1088e9;
+    color: #fff;
+    text-align: center;
+    font-size: 20px;
+}
