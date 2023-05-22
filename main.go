@@ -2,13 +2,11 @@ package main
 
 import (
 	"embed"
-	"encoding/json"
-	"fmt"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
-	"io"
 	"net/http"
+	"tabManager/handle"
 )
 
 var assets embed.FS
@@ -38,41 +36,10 @@ func main() {
 	}
 }
 
-type TabsData struct {
-	Title   string `json:"title"`
-	Url     string `json:"url"`
-	IconUrl string `json:"iconUrl"`
-}
-
 func startServer() {
-	http.HandleFunc("/tabs", tabsHandler)
-	err := http.ListenAndServe("127.0.0.1:12315", nil)
+	http.HandleFunc("/tabs", handle.TabHandler)
+	err := http.ListenAndServe("localhost:12315", nil)
 	if err != nil {
 		println(" startServer Error:", err.Error())
-	}
-}
-
-func tabsHandler(w http.ResponseWriter, r *http.Request) {
-	var body, err = io.ReadAll(r.Body)
-	if err != nil {
-		println(" tabsHandler Error:", err.Error())
-	}
-	var tabsData []TabsData
-	var jsonStr = string(body)
-	err = json.Unmarshal([]byte(jsonStr), &tabsData)
-	if err != nil {
-		println(" tabsHandler Error:", err.Error())
-		return
-	}
-
-	for i, n := 0, len(tabsData); i < n; i++ { // 常见的 for 循环，支持初始化语句。
-		fmt.Printf("IconUrl value %s\n", tabsData[i].IconUrl)
-		fmt.Printf("Title value %s\n", tabsData[i].Title)
-		fmt.Printf("Url value %s\n", tabsData[i].Url)
-	}
-	// 回复
-	_, err = w.Write([]byte("success"))
-	if err != nil {
-		println(" tabsHandler resp Error:", err.Error())
 	}
 }
