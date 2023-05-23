@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"tabManager/internal/handle"
 )
 
 // App struct
@@ -24,4 +25,18 @@ func (a *App) startup(ctx context.Context) {
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
+}
+
+func (a *App) GetTabList() H {
+	tabs, err := handle.QueryAllTabs()
+	if err != nil {
+		return M{
+			"code": -1,
+			"msg":  "ERROR : " + err.Error(),
+		}
+	}
+	return M{
+		"code": 200,
+		"data": tabs,
+	}
 }

@@ -79,10 +79,14 @@
 
 <script>
 import CreateText from "./components/CreateText.vue";
+import {GetTabList} from "../../wailsjs/go/main/App.js";
+import {ref, watch,onMounted} from "vue";
 
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons-vue';
+import {notification} from 'ant-design-vue';
 import {defineComponent} from 'vue';
 
+let list = ref()
 export default defineComponent({
   components: {
     CreateText,
@@ -90,6 +94,18 @@ export default defineComponent({
     DeleteOutlined
   },
 });
+
+function getTabList() {
+  GetTabList().then(res => {
+    if (res.code !== 200) {
+      notification({
+        title: res.msg,
+        type: "error",
+      })
+    }
+    list.value = res.data
+  })
+}
 
 
 </script>
