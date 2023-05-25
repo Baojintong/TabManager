@@ -12,7 +12,9 @@ import (
 	"time"
 )
 
-var db, _ = sql.Open("sqlite3", "file:./db/tabs.db?mode=rwc")
+var dbPath = "./db/tabs.db"
+var db, _ = sql.Open("sqlite3", define.DATA_SOURCE_NAME)
+
 
 func TabHandler(w http.ResponseWriter, r *http.Request) {
 
