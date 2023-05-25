@@ -29,6 +29,13 @@ html {
     border-radius: 4px;
     margin-bottom: 15px;
     margin-left: 15px;
+    transition: background-color 0.3s ease;
+}
+.text_div:hover {
+    background-color: #f5f3f3;
+}
+.text_div:active {
+    background-color: #868686;
 }
 .text_content_div{
     width: 70vw;
