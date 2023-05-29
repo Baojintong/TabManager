@@ -9,3 +9,7 @@ export function GetTabList() {
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
+
+export function UpdateTab(arg1) {
+  return window['go']['main']['App']['UpdateTab'](arg1);
+}

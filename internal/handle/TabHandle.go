@@ -4,7 +4,7 @@ import (
 	"C"
 	"database/sql"
 	"encoding/json"
-	"fmt"
+	"github.com/labstack/gommon/log"
 	_ "github.com/mattn/go-sqlite3"
 	"io"
 	"net/http"
@@ -15,18 +15,17 @@ import (
 var dbPath = "./db/tabs.db"
 var db, _ = sql.Open("sqlite3", define.DATA_SOURCE_NAME)
 
-
 func TabHandler(w http.ResponseWriter, r *http.Request) {
 
 	var body, err = io.ReadAll(r.Body)
 	if err != nil {
-		fmt.Println(" tabsHandler Error:", err.Error())
+		log.Error(" tabsHandler Error:", err)
 	}
 	var tabsData []define.TabsData
 	var jsonStr = string(body)
 	err = json.Unmarshal([]byte(jsonStr), &tabsData)
 	if err != nil {
-		fmt.Println(" tabsHandler Error:", err.Error())
+		log.Error(" tabsHandler Error:", err)
 		return
 	}
 	now := time.Now()
@@ -39,7 +38,7 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err = w.Write([]byte("success"))
 	if err != nil {
-		fmt.Println(" tabsHandler resp Error:", err.Error())
+		log.Error(" tabsHandler resp Error:", err)
 	}
 }
 
@@ -52,33 +51,33 @@ func createTable() {
 	var _, err = db.Exec("CREATE TABLE IF NOT EXISTS tabs " +
 		"(id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)")
 	if err != nil {
-		fmt.Println("createTable Error:", err)
+		log.Error("createTable Error:", err)
 	}
 }
 
 func batchInsert(tabsDatas []define.TabsData) {
 	tx, err := db.Begin()
 	if err != nil {
-		fmt.Println("batchInsert Error:", err)
+		log.Error("batchInsert Error:", err)
 	}
 	defer tx.Rollback()
 
 	stmt, err := tx.Prepare("INSERT INTO tabs(title,icon_url,url,describe,save_time) VALUES (?,?,?,?,?)")
 	if err != nil {
-		fmt.Println("batchInsert Error:", err)
+		log.Error("batchInsert Error:", err)
 	}
 	defer stmt.Close()
 
 	for _, d := range tabsDatas {
 		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime)
 		if err != nil {
-			fmt.Println("batchInsert Error:", err)
+			log.Error("batchInsert Error:", err)
 		}
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		fmt.Println("batchInsert Error:", err)
+		log.Error("batchInsert Error:", err)
 	}
 }
 
@@ -86,17 +85,28 @@ func QueryAllTabs() ([]define.TabsData, error) {
 	rows, err := db.Query("SELECT * FROM tabs")
 
 	if err != nil {
-		fmt.Println("queryAllTabs Error:", err)
+		log.Error("queryAllTabs Error:", err)
 	}
 	tabsData := []define.TabsData{}
 	for rows.Next() {
 		var tabs define.TabsData
 		err := rows.Scan(&tabs.Id, &tabs.Title, &tabs.IconUrl, &tabs.Url, &tabs.Describe, &tabs.SaveTime, &tabs.Status)
 		if err != nil {
-			fmt.Println("queryAllTabs Error:", err)
+			log.Error("queryAllTabs Error:", err)
 			return nil, err
 		}
 		tabsData = append(tabsData, tabs)
 	}
 	return tabsData, err
+}
+
+func UpdateTab(tab define.TabsData) {
+	stmt, err := db.Prepare("UPDATE tabs SET title=?,`describe`=? WHERE id=?")
+	defer stmt.Close()
+
+	result, err := stmt.Exec(tab.Title, tab.Describe, tab.Id)
+	_, err = result.RowsAffected()
+	if err != nil {
+		log.Error("UpdateTab error:", err)
+	}
 }

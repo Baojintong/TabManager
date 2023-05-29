@@ -7,11 +7,7 @@
           {{ item.title }}
         </div>
         <div class="text_button_div">
-          <a-button type="ghost" shape="circle" size="large">
-            <template #icon>
-              <EditOutlined/>
-            </template>
-          </a-button>
+          <TabManage :data="item"/>
           <a-button type="ghost" shape="circle" size="large" style="margin-left: 8px">
             <template #icon>
               <DeleteOutlined/>
@@ -29,11 +25,13 @@ import {BrowserOpenURL} from "../../wailsjs/runtime";
 import {defineComponent, onMounted, ref} from "vue";
 import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
 import {notification} from 'ant-design-vue';
+import TabManage from "./TabManage.vue";
 
 
 let list = ref()
 export default{
   components: {
+    TabManage,
     EditOutlined,
     DeleteOutlined
   },

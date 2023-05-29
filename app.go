@@ -2,9 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/labstack/gommon/log"
+	"tabManager/internal/define"
 	"tabManager/internal/handle"
 )
+
 
 // App struct
 type App struct {
@@ -38,5 +42,19 @@ func (a *App) GetTabList() H {
 	return M{
 		"code": 200,
 		"data": tabs,
+	}
+}
+
+func (a *App) UpdateTab(item string) H {
+	log.Info("UpdateTab start.......")
+	var tab define.TabsData
+	err := json.Unmarshal([]byte(item), &tab)
+	if err != nil {
+		log.Error(" UpdateTab Error:", err)
+	}
+	handle.UpdateTab(tab)
+	return M{
+		"code": 200,
+		"data": "",
 	}
 }

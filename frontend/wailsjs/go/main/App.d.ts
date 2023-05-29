@@ -5,3 +5,5 @@ import {main} from '../models';
 export function GetTabList():Promise<main.H>;
 
 export function Greet(arg1:string):Promise<string>;
+
+export function UpdateTab(arg1:string):Promise<main.H>;

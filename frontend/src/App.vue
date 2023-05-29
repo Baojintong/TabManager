@@ -1,10 +1,6 @@
 <template>
   <a-row>
-    <a-col :span="22">
-      <a-row class="createTextRow">
-       <TabManage title="新建tab" btn-type="primary"/>
-      </a-row>
-      <a-divider class="divider"/>
+    <a-col :span="22" style="margin-top: 10px">
       <TabList/>
     </a-col>
   </a-row>
@@ -21,7 +17,7 @@ import TabManage from "./components/TabManage.vue";
 import {defineComponent} from "vue";
 
 export default defineComponent({
-  components: {TabList,TabManage}
+  components: {TabList}
 })
 
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"github.com/labstack/gommon/log"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -35,25 +36,15 @@ func main() {
 		},
 	})
 	if err != nil {
-		println("start app Error:", err.Error())
+		log.Error("start app Error:", err)
 	}
 }
 
 func startServer() {
+	log.Info("startServer.......")
 	http.HandleFunc("/tabs", handle.TabHandler)
 	err := http.ListenAndServe(define.LISTEN_URL, nil)
 	if err != nil {
-		println(" startServer Error:", err.Error())
+		log.Error(" startServer Error:")
 	}
 }
-
-/*func createDataBase() {
-	_, err := os.Stat(define.DB_PATH)
-	if os.IsNotExist(err) {
-		// Create a new database file if it doesn't exist
-		_, err = os.Create(define.DB_PATH)
-		if err != nil {
-			fmt.Println(" init create database Error:", err.Error())
-		}
-	}
-}*/
