@@ -110,3 +110,7 @@ func UpdateTab(tab define.TabsData) {
 		log.Error("UpdateTab error:", err)
 	}
 }
+
+func DeleteTab(tab define.TabsData) {
+
+}

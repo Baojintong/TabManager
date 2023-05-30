@@ -7,7 +7,7 @@
           {{ item.title }}
         </div>
         <div class="text_button_div">
-          <TabManage :data="item"/>
+          <TabManage :data="item" :getTabList="getTabList"/>
           <a-button type="ghost" shape="circle" size="large" style="margin-left: 8px">
             <template #icon>
               <DeleteOutlined/>
@@ -22,11 +22,10 @@
 <script>
 import {GetTabList} from "../../wailsjs/go/main/App.js";
 import {BrowserOpenURL} from "../../wailsjs/runtime";
-import {defineComponent, onMounted, ref} from "vue";
+import {ref} from "vue";
 import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
 import {notification} from 'ant-design-vue';
 import TabManage from "./TabManage.vue";
-
 
 let list = ref()
 export default{
@@ -35,10 +34,10 @@ export default{
     EditOutlined,
     DeleteOutlined
   },
-  created() {
-    setInterval(() => {
-      this.getTabList()
-    }, 2000)
+  mounted() {
+    // setInterval(() => {
+    //   this.getTabList()
+    // }, 2000)
     this.getTabList()
   },
   data() {
@@ -48,6 +47,7 @@ export default{
   },
   methods: {
     getTabList() {
+      console.log("getTabList....")
       GetTabList().then(res => {
         if (res.code !== 200) {
           notification({
@@ -68,7 +68,7 @@ export default{
     },
     openUrl(url) {
       BrowserOpenURL(url);
-    }
+    },
   }
 };
 </script>

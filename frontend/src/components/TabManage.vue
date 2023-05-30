@@ -5,7 +5,7 @@
     </template>
   </a-button>
 
-  <a-modal v-model:visible="dialogVisible" title="编辑" @ok="handleOk">
+  <a-modal v-model:visible="dialogVisible" title="编辑" @ok="handleOk" @cancel="cancel">
     <a-form
         :model="formState"
         name="basic"
@@ -27,22 +27,21 @@
 </template>
 
 <script setup>
-import {ref, defineComponent, reactive} from "vue";
+import {ref, reactive} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
 import {UpdateTab} from "../../wailsjs/go/main/App.js";
+import {deepEqual} from "../utils.js";
 
-let props = defineProps(['data'])
+let props = defineProps(['data', 'getTabList'])
 const dialogVisible = ref(false)
-let item = reactive({
-  title: '',
-  url: '',
-  iconUrl: '',
-  describe: ''
-});
+let item = {}
+let originalItem = {}
 
 if (props.data !== undefined) {
-  item = props.data
+  item = reactive({...props.data});
+  originalItem = JSON.parse(JSON.stringify(props.data));
 }
+
 
 const onFinish = values => {
   console.log('Success:', values);
@@ -54,5 +53,11 @@ const onFinishFailed = errorInfo => {
 const handleOk = e => {
   dialogVisible.value = false;
   UpdateTab(JSON.stringify(item))
+  props.getTabList()
+};
+
+const cancel = e => {
+  Object.assign(item, originalItem)
+  props.getTabList()
 };
 </script>

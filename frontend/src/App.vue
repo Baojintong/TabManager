@@ -13,7 +13,6 @@
 
 <script>
 import TabList from "./components/TabList.vue";
-import TabManage from "./components/TabManage.vue";
 import {defineComponent} from "vue";
 
 export default defineComponent({
