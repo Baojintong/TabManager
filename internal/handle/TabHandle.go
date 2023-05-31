@@ -112,5 +112,12 @@ func UpdateTab(tab define.TabsData) {
 }
 
 func DeleteTab(tab define.TabsData) {
+	stmt, err := db.Prepare("DELETE FROM tabs WHERE id=?")
+	defer stmt.Close()
 
+	result, err := stmt.Exec(tab.Id)
+	_, err = result.RowsAffected()
+	if err != nil {
+		log.Error("UpdateTab error:", err)
+	}
 }

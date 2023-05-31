@@ -9,7 +9,6 @@ import (
 	"tabManager/internal/handle"
 )
 
-
 // App struct
 type App struct {
 	ctx context.Context
@@ -53,6 +52,20 @@ func (a *App) UpdateTab(item string) H {
 		log.Error(" UpdateTab Error:", err)
 	}
 	handle.UpdateTab(tab)
+	return M{
+		"code": 200,
+		"data": "",
+	}
+}
+
+func (a *App) DeleteTab(item string) H {
+	log.Info("DeleteTab start.......")
+	var tab define.TabsData
+	err := json.Unmarshal([]byte(item), &tab)
+	if err != nil {
+		log.Error(" DeleteTab Error:", err)
+	}
+	handle.DeleteTab(tab)
 	return M{
 		"code": 200,
 		"data": "",

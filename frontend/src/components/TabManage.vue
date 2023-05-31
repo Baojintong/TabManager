@@ -38,8 +38,8 @@ let item = {}
 let originalItem = {}
 
 if (props.data !== undefined) {
-  item = reactive({...props.data});
-  originalItem = JSON.parse(JSON.stringify(props.data));
+  item = props.data//reactive({...props.data});
+  //originalItem = JSON.parse(JSON.stringify(props.data));
 }
 
 
@@ -57,7 +57,7 @@ const handleOk = e => {
 };
 
 const cancel = e => {
-  Object.assign(item, originalItem)
+  //Object.assign(item, originalItem)
   props.getTabList()
 };
 </script>
