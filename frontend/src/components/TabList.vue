@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div v-for="(items,time) in groupedData">
+    <div v-for="(items,time) in groupedData" v-infinite-scroll="handleScroll" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
       <div class="time_div">{{ time }}</div>
       <div v-for="item in items" class="text_div">
         <div v-on:click="openUrl(item.url)" class="text_content_div">
@@ -8,7 +8,7 @@
         </div>
         <div class="text_button_div">
           <TabManage :data="item" :getTabList="getTabList"/>
-          <a-button type="ghost" shape="circle" size="large" style="margin-left: 8px">
+          <a-button type="ghost" shape="circle" size="large" class="button_del">
             <template #icon>
               <DeleteOutlined v-on:click="deleteItem(item)"/>
             </template>
@@ -35,9 +35,9 @@ export default {
     DeleteOutlined
   },
   created() {
-    setInterval(() => {
-      this.getTabList()
-    }, 2000)
+    // setInterval(() => {
+    //   this.getTabList()
+    // }, 2000)
     this.getTabList()
   },
   data() {
@@ -49,10 +49,7 @@ export default {
     getTabList() {
       GetTabList().then(res => {
         if (res.code !== 200) {
-          notification({
-            title: res.msg,
-            type: "error",
-          })
+          alert("数据异常")
         }
         //this.list = res.data
         this.groupedData = res.data.reduce((acc, cur) => {
@@ -70,6 +67,9 @@ export default {
     },
     deleteItem(obj) {
       DeleteTab(JSON.stringify(obj))
+    },
+    handleScroll(){
+      console.info("handleScroll")
     }
   }
 };

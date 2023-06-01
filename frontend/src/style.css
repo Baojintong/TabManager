@@ -47,7 +47,14 @@ html {
     width:10vw ;
     float: right;
 }
-
+.button_del{
+    margin-right: 8px;
+    float: right
+}
+.button_edit{
+    float: right;
+    margin-right: 8px;
+}
 #components-back-top-demo-custom .ant-back-top {
     bottom: 100px;
 }

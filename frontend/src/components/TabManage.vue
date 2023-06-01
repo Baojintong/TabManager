@@ -1,5 +1,5 @@
 <template>
-  <a-button type="ghost" shape="circle" size="large" @click="dialogVisible = true">
+  <a-button type="ghost" shape="circle" size="large" @click="dialogVisible = true" class="button_edit">
     <template #icon>
       <EditOutlined/>
     </template>

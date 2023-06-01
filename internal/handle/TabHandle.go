@@ -62,14 +62,14 @@ func batchInsert(tabsDatas []define.TabsData) {
 	}
 	defer tx.Rollback()
 
-	stmt, err := tx.Prepare("INSERT INTO tabs(title,icon_url,url,describe,save_time) VALUES (?,?,?,?,?)")
+	stmt, err := tx.Prepare("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (?,?,?,?,?,?)")
 	if err != nil {
 		log.Error("batchInsert Error:", err)
 	}
 	defer stmt.Close()
-
+	timestamp := time.Now().Unix()
 	for _, d := range tabsDatas {
-		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime)
+		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime,timestamp)
 		if err != nil {
 			log.Error("batchInsert Error:", err)
 		}
@@ -90,7 +90,7 @@ func QueryAllTabs() ([]define.TabsData, error) {
 	tabsData := []define.TabsData{}
 	for rows.Next() {
 		var tabs define.TabsData
-		err := rows.Scan(&tabs.Id, &tabs.Title, &tabs.IconUrl, &tabs.Url, &tabs.Describe, &tabs.SaveTime, &tabs.Status)
+		err := rows.Scan(&tabs.Id, &tabs.Title, &tabs.IconUrl, &tabs.Url, &tabs.Describe, &tabs.SaveTime, &tabs.Status, &tabs.TimeStamp)
 		if err != nil {
 			log.Error("queryAllTabs Error:", err)
 			return nil, err
