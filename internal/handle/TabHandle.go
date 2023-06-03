@@ -16,7 +16,7 @@ var dbPath = "./db/tabs.db"
 var db, _ = sql.Open("sqlite3", define.DATA_SOURCE_NAME)
 
 func TabHandler(w http.ResponseWriter, r *http.Request) {
-
+	log.Info("TabHandler.........")
 	var body, err = io.ReadAll(r.Body)
 	if err != nil {
 		log.Error(" tabsHandler Error:", err)
@@ -34,7 +34,7 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 		tabsData[i].Describe = tabsData[i].Title
 		tabsData[i].SaveTime = nowDate
 	}
-	saveTabsData(nowDate, tabsData)
+	saveTabsData(tabsData)
 
 	_, err = w.Write([]byte("success"))
 	if err != nil {
@@ -42,7 +42,7 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func saveTabsData(fold string, tabsDatas []define.TabsData) {
+func saveTabsData(tabsDatas []define.TabsData) {
 	createTable()
 	batchInsert(tabsDatas)
 }
@@ -69,7 +69,7 @@ func batchInsert(tabsDatas []define.TabsData) {
 	defer stmt.Close()
 	timestamp := time.Now().Unix()
 	for _, d := range tabsDatas {
-		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime,timestamp)
+		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime, timestamp)
 		if err != nil {
 			log.Error("batchInsert Error:", err)
 		}
@@ -82,7 +82,7 @@ func batchInsert(tabsDatas []define.TabsData) {
 }
 
 func QueryAllTabs() ([]define.TabsData, error) {
-	rows, err := db.Query("SELECT * FROM tabs")
+	rows, err := db.Query("SELECT * FROM tabs order by time_stamp desc")
 
 	if err != nil {
 		log.Error("queryAllTabs Error:", err)

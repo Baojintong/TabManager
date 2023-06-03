@@ -39,7 +39,7 @@ let originalItem = {}
 
 if (props.data !== undefined) {
   item = props.data//reactive({...props.data});
-  //originalItem = JSON.parse(JSON.stringify(props.data));
+  originalItem = JSON.parse(JSON.stringify(props.data));
 }
 
 
@@ -53,11 +53,12 @@ const onFinishFailed = errorInfo => {
 const handleOk = e => {
   dialogVisible.value = false;
   UpdateTab(JSON.stringify(item))
+  originalItem = JSON.parse(JSON.stringify(item));
   props.getTabList()
 };
 
 const cancel = e => {
-  //Object.assign(item, originalItem)
+  Object.assign(item, originalItem)
   props.getTabList()
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div v-for="(items,time) in groupedData" v-infinite-scroll="handleScroll" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+    <div v-for="(items,time) in groupedData.value">
       <div class="time_div">{{ time }}</div>
       <div v-for="item in items" class="text_div">
         <div v-on:click="openUrl(item.url)" class="text_content_div">
@@ -19,58 +19,46 @@
   </main>
 </template>
 
-<script>
+<script setup>
 import {DeleteTab, GetTabList} from "../../wailsjs/go/main/App.js";
 import {BrowserOpenURL} from "../../wailsjs/runtime";
-import {ref} from "vue";
-import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
+import {ref, onMounted, reactive} from "vue";
+import {DeleteOutlined} from '@ant-design/icons-vue';
 import {notification} from 'ant-design-vue';
 import TabManage from "./TabManage.vue";
 
-let list = ref()
-export default {
-  components: {
-    TabManage,
-    EditOutlined,
-    DeleteOutlined
-  },
-  created() {
-    // setInterval(() => {
-    //   this.getTabList()
-    // }, 2000)
-    this.getTabList()
-  },
-  data() {
-    return {
-      groupedData: null
+//赋值方式
+let groupedData = reactive({
+  value: {}
+})
+
+function getTabList() {
+  GetTabList().then(res => {
+    if (res.code !== 200) {
+      alert("数据异常")
     }
-  },
-  methods: {
-    getTabList() {
-      GetTabList().then(res => {
-        if (res.code !== 200) {
-          alert("数据异常")
-        }
-        //this.list = res.data
-        this.groupedData = res.data.reduce((acc, cur) => {
-          const time = cur.saveTime;
-          if (!acc[time]) {
-            acc[time] = [];
-          }
-          acc[time].push(cur);
-          return acc;
-        }, {})
-      })
-    },
-    openUrl(url) {
-      BrowserOpenURL(url);
-    },
-    deleteItem(obj) {
-      DeleteTab(JSON.stringify(obj))
-    },
-    handleScroll(){
-      console.info("handleScroll")
-    }
-  }
-};
+    let list = res.data
+    groupedData.value = list.reduce((acc, cur) => {
+      const time = cur.saveTime;
+      if (!acc[time]) {
+        acc[time] = [];
+      }
+      acc[time].push(cur);
+      return acc;
+    }, {})
+  })
+}
+
+onMounted(async () => {
+  getTabList()
+})
+
+const openUrl = (url) => {
+  BrowserOpenURL(url);
+}
+
+const deleteItem = (obj) => {
+  DeleteTab(JSON.stringify(obj))
+  getTabList()
+}
 </script>

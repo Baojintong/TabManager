@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
-    "ant-design-vue": "^3.2.20",
-    "vue-infinite-scroll": "^2.0.2"
+    "ant-design-vue": "^4.0.0-rc.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.0.3",
