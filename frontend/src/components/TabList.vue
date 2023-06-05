@@ -50,7 +50,9 @@ function getTabList() {
 }
 
 onMounted(async () => {
-  getTabList()
+  setInterval(() => {
+    getTabList()
+  }, 2000);
 })
 
 const openUrl = (url) => {

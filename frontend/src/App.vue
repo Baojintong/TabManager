@@ -6,30 +6,18 @@
   </a-row>
 
 
-  <a-float-button-group trigger="click" type="primary" :style="{ right: '24px' }">
+  <a-float-button-group trigger="click" :style="{ right: '36px' }">
     <template #icon>
-      TOP
+      <SettingOutlined />
     </template>
-    <a-float-button />
-    <a-float-button>
-      <template #icon>
-        <div id="components-back-top-demo-custom">
-          <a-back-top>
-            <div class="ant-back-top-inner">UP</div>
-          </a-back-top>
-        </div>
-      </template>
-    </a-float-button>
+    <a-float-button tooltip="个人标签编辑"/>
   </a-float-button-group>
+  <a-back-top :style="{ right: '36px' }"/>
 </template>
 
-<script>
+<script setup>
 import TabList from "./components/TabList.vue";
-import {defineComponent} from "vue";
-
-export default defineComponent({
-  components: {TabList}
-})
+import {SettingOutlined} from '@ant-design/icons-vue';
 
 
 </script>
