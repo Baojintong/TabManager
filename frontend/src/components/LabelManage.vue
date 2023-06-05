@@ -36,7 +36,7 @@ if (props.data !== undefined) {
 } else {
   label = {
     name: ref(""),
-    color: ref("hsl(140 100% 50% / 0.8)")
+    color: ref("hsl(177 34.09% 39.77% / 0.49)")
   }
 }
 
