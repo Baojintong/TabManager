@@ -8,7 +8,7 @@
         @finishFailed="onFinishFailed"
     >
       <a-form-item label="标签名称" name="labelName">
-        <a-input v-model:value="label.name.value" placeholder="自定义标签"/>
+        <a-input v-model:value="label.name.value" placeholder="自定义标签" show-count :maxlength="20"/>
       </a-form-item>
       <a-form-item label="标签颜色" name="labelColor">
         <ColorPicker :color="label.color.value" @color-change="updateColor"/>

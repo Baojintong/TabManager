@@ -21,12 +21,21 @@
       <a-form-item label="描述" name="describe">
         <a-input v-model:value="item.describe"/>
       </a-form-item>
+
+      <a-form-item label="选择标签" name="label">
+        <a-tag color="pink">pink</a-tag>
+        <a-tag color="red">red</a-tag>
+        <a-tag color="orange">orange</a-tag>
+        <a-tag color="green">green</a-tag>
+        <a-tag color="cyan">cyan</a-tag>
+        <a-tag color="blue">blue</a-tag>
+      </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
 import {UpdateTab} from "../../wailsjs/go/main/App.js";
 
@@ -39,6 +48,10 @@ if (props.data !== undefined) {
   item = props.data//reactive({...props.data});
   originalItem = JSON.parse(JSON.stringify(props.data));
 }
+
+onMounted(async () => {
+
+})
 
 
 const onFinish = values => {
