@@ -71,3 +71,17 @@ func (a *App) DeleteTab(item string) H {
 		"data": "",
 	}
 }
+
+func (a *App) SaveLabel(labels string) H {
+	log.Info("SaveLabel start.......")
+	var label define.Label
+	err := json.Unmarshal([]byte(labels), &label)
+	if err != nil {
+		log.Error(" SaveLabel Error:", err)
+	}
+	handle.SaveLabel(label)
+	return M{
+		"code": 200,
+		"data": "",
+	}
+}

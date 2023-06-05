@@ -14,6 +14,10 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function SaveLabel(arg1) {
+  return window['go']['main']['App']['SaveLabel'](arg1);
+}
+
 export function UpdateTab(arg1) {
   return window['go']['main']['App']['UpdateTab'](arg1);
 }

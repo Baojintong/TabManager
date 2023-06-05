@@ -5,9 +5,8 @@
     </template>
   </a-button>
 
-  <a-modal v-model:visible="dialogVisible" title="编辑" @ok="handleOk" @cancel="cancel">
+  <a-modal v-model:open="dialogVisible" title="编辑" @ok="handleOk" @cancel="cancel">
     <a-form
-        :model="formState"
         name="basic"
         autocomplete="off"
         @finish="onFinish"
@@ -27,10 +26,9 @@
 </template>
 
 <script setup>
-import {ref, reactive} from "vue";
+import {ref} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
 import {UpdateTab} from "../../wailsjs/go/main/App.js";
-import {deepEqual} from "../utils.js";
 
 let props = defineProps(['data', 'getTabList'])
 const dialogVisible = ref(false)

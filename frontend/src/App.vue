@@ -10,13 +10,14 @@
     <template #icon>
       <SettingOutlined />
     </template>
-    <a-float-button tooltip="个人标签编辑"/>
+    <LabelManage/>
   </a-float-button-group>
   <a-back-top :style="{ right: '36px' }"/>
 </template>
 
 <script setup>
 import TabList from "./components/TabList.vue";
+import LabelManage from "./components/LabelManage.vue";
 import {SettingOutlined} from '@ant-design/icons-vue';
 
 

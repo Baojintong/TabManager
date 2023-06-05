@@ -10,3 +10,9 @@ type TabsData struct {
 	Status    uint8  `json:"status"`
 	TimeStamp int64  `json:"timeStamp"`
 }
+
+type Label struct {
+	Id    uint32 `json:"id"`
+	Name  string `json:"name"`
+	Color string `json:"color"`
+}

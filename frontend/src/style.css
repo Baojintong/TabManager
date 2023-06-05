@@ -29,14 +29,23 @@ html {
     border-radius: 4px;
     margin-bottom: 15px;
     margin-left: 15px;
-    transition: background-color 0.3s ease;
+    /*div阴影效果*/
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    /*突起*/
+    transition: transform 0.2s ease-in-out;
 }
 .text_div:hover {
     background-color: #f5f3f3;
+    transform: translateY(-5px);
 }
 .text_div:active {
-    background-color: #868686;
+    background-color: #e7e5e5;
 }
+.text_div.shake {
+    transform: translateX(5px);
+}
+
+
 .text_content_div{
     width: 70vw;
     padding: 10px;

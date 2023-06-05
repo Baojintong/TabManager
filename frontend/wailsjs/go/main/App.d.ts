@@ -8,4 +8,6 @@ export function GetTabList():Promise<main.H>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function SaveLabel(arg1:string):Promise<main.H>;
+
 export function UpdateTab(arg1:string):Promise<main.H>;

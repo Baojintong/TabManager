@@ -34,7 +34,7 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 		tabsData[i].Describe = tabsData[i].Title
 		tabsData[i].SaveTime = nowDate
 	}
-	saveTabsData(tabsData)
+	saveTab(tabsData)
 
 	_, err = w.Write([]byte("success"))
 	if err != nil {
@@ -42,7 +42,7 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func saveTabsData(tabsDatas []define.TabsData) {
+func saveTab(tabsDatas []define.TabsData) {
 	createTable()
 	batchInsert(tabsDatas)
 }
@@ -101,6 +101,7 @@ func QueryAllTabs() ([]define.TabsData, error) {
 }
 
 func UpdateTab(tab define.TabsData) {
+	tx, err := db.Begin()
 	stmt, err := db.Prepare("UPDATE tabs SET title=?,`describe`=? WHERE id=?")
 	defer stmt.Close()
 
@@ -108,6 +109,11 @@ func UpdateTab(tab define.TabsData) {
 	_, err = result.RowsAffected()
 	if err != nil {
 		log.Error("UpdateTab error:", err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Error("UpdateTab Error:", err)
 	}
 }
 

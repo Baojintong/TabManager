@@ -2,7 +2,7 @@
   <main>
     <div v-for="(items,time) in groupedData.value">
       <div class="time_div">{{ time }}</div>
-      <div v-for="item in items" class="text_div">
+      <div v-for="item in items" class="text_div" ref="text_div">
         <div v-on:click="openUrl(item.url)" class="text_content_div">
           {{ item.title }}
         </div>
@@ -22,9 +22,8 @@
 <script setup>
 import {DeleteTab, GetTabList} from "../../wailsjs/go/main/App.js";
 import {BrowserOpenURL} from "../../wailsjs/runtime";
-import {ref, onMounted, reactive} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {DeleteOutlined} from '@ant-design/icons-vue';
-import {notification} from 'ant-design-vue';
 import TabManage from "./TabManage.vue";
 
 //赋值方式
