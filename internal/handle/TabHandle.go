@@ -55,44 +55,18 @@ func createTable() {
 	}
 }
 
-func batchInsert(tabsDatas []define.TabsData) {
-	tx, err := db.Begin()
-	if err != nil {
-		log.Error("batchInsert Error:", err)
-	}
-	defer tx.Rollback()
-
-	stmt, err := tx.Prepare("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (?,?,?,?,?,?)")
-	if err != nil {
-		log.Error("batchInsert Error:", err)
-	}
-	defer stmt.Close()
-	timestamp := time.Now().Unix()
-	for _, d := range tabsDatas {
-		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime, timestamp)
-		if err != nil {
-			log.Error("batchInsert Error:", err)
-		}
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		log.Error("batchInsert Error:", err)
-	}
-}
-
 func QueryAllTabs() ([]define.TabsData, error) {
 	rows, err := db.Query("SELECT * FROM tabs order by time_stamp desc")
 
 	if err != nil {
-		log.Error("queryAllTabs Error:", err)
+		log.Error("queryAllTabs Query Error:", err)
 	}
-	tabsData := []define.TabsData{}
+	var tabsData []define.TabsData
 	for rows.Next() {
 		var tabs define.TabsData
 		err := rows.Scan(&tabs.Id, &tabs.Title, &tabs.IconUrl, &tabs.Url, &tabs.Describe, &tabs.SaveTime, &tabs.Status, &tabs.TimeStamp)
 		if err != nil {
-			log.Error("queryAllTabs Error:", err)
+			log.Error("queryAllTabs Scan Error:", err)
 			return nil, err
 		}
 		tabsData = append(tabsData, tabs)
@@ -100,30 +74,88 @@ func QueryAllTabs() ([]define.TabsData, error) {
 	return tabsData, err
 }
 
-func UpdateTab(tab define.TabsData) {
+func batchInsert(tabsDatas []define.TabsData) {
 	tx, err := db.Begin()
-	stmt, err := db.Prepare("UPDATE tabs SET title=?,`describe`=? WHERE id=?")
-	defer stmt.Close()
-
-	result, err := stmt.Exec(tab.Title, tab.Describe, tab.Id)
-	_, err = result.RowsAffected()
 	if err != nil {
-		log.Error("UpdateTab error:", err)
+		log.Error("batchInsert Begin Error:", err)
 	}
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (?,?,?,?,?,?)")
+	if err != nil {
+		log.Error("batchInsert Prepare Error:", err)
+	}
+
+	timestamp := time.Now().Unix()
+	for _, d := range tabsDatas {
+		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime, timestamp)
+		if err != nil {
+			log.Error("batchInsert Exec Error:", err)
+		}
+	}
+
+	defer func(stmt *sql.Stmt) {
+		err := stmt.Close()
+		if err != nil {
+			log.Error("batchInsert Close Error:", err)
+		}
+	}(stmt)
 
 	err = tx.Commit()
 	if err != nil {
-		log.Error("UpdateTab Error:", err)
+		log.Error("batchInsert Commit Error:", err)
+	}
+
+}
+
+func UpdateTab(tab define.TabsData) {
+	tx, err := db.Begin()
+	if err != nil {
+		log.Error("UpdateTab Begin Error:", err)
+	}
+	defer tx.Rollback()
+
+	stmt, err := db.Prepare("UPDATE tabs SET title=?,`describe`=? WHERE id=?")
+	_, err = stmt.Exec(tab.Title, tab.Describe, tab.Id)
+	if err != nil {
+		log.Error("UpdateTab Exec error:", err)
+	}
+
+	defer func(stmt *sql.Stmt) {
+		err := stmt.Close()
+		if err != nil {
+			log.Error("UpdateTab Close error:", err)
+		}
+	}(stmt)
+
+	err = tx.Commit()
+	if err != nil {
+		log.Error("UpdateTab Commit Error:", err)
 	}
 }
 
 func DeleteTab(tab define.TabsData) {
-	stmt, err := db.Prepare("DELETE FROM tabs WHERE id=?")
-	defer stmt.Close()
-
-	result, err := stmt.Exec(tab.Id)
-	_, err = result.RowsAffected()
+	tx, err := db.Begin()
 	if err != nil {
-		log.Error("UpdateTab error:", err)
+		log.Error("DeleteTab Begin Error:", err)
+	}
+	defer tx.Rollback()
+
+	stmt, err := db.Prepare("DELETE FROM tabs WHERE id=?")
+	_, err = stmt.Exec(tab.Id)
+	if err != nil {
+		log.Error("DeleteTab Exec error:", err)
+	}
+
+	defer func(stmt *sql.Stmt) {
+		err := stmt.Close()
+		if err != nil {
+			log.Error("DeleteTab Close error:", err)
+		}
+	}(stmt)
+
+	err = tx.Commit()
+	if err != nil {
+		log.Error("DeleteTab Commit Error:", err)
 	}
 }

@@ -23,4 +23,5 @@ button.addEventListener('click', async () => {
         function (data, status) {
             alert("Data: " + data + "\nStatus: " + status);
         }, "json");
+    alert("保存完成");
 });
