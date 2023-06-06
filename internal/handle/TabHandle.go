@@ -21,20 +21,20 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(" tabsHandler Error:", err)
 	}
-	var tabsData []define.TabsData
+	var Tab []define.Tab
 	var jsonStr = string(body)
-	err = json.Unmarshal([]byte(jsonStr), &tabsData)
+	err = json.Unmarshal([]byte(jsonStr), &Tab)
 	if err != nil {
 		log.Error(" tabsHandler Error:", err)
 		return
 	}
 	now := time.Now()
 	nowDate := now.Format("2006-01-02")
-	for i, n := 0, len(tabsData); i < n; i++ {
-		tabsData[i].Describe = tabsData[i].Title
-		tabsData[i].SaveTime = nowDate
+	for i, n := 0, len(Tab); i < n; i++ {
+		Tab[i].Describe = Tab[i].Title
+		Tab[i].SaveTime = nowDate
 	}
-	saveTab(tabsData)
+	saveTab(Tab)
 
 	_, err = w.Write([]byte("success"))
 	if err != nil {
@@ -42,39 +42,39 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func saveTab(tabsDatas []define.TabsData) {
-	createTable()
-	batchInsert(tabsDatas)
+func saveTab(Tabs []define.Tab) {
+	createTabTable()
+	batchInsert(Tabs)
 }
 
-func createTable() {
-	var _, err = db.Exec("CREATE TABLE IF NOT EXISTS tabs " +
+func createTabTable() {
+	var _, err = db.Exec("create table if not exists tabs " +
 		"(id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)")
 	if err != nil {
-		log.Error("createTable Error:", err)
+		log.Error("createTabTable Error:", err)
 	}
 }
 
-func QueryAllTabs() ([]define.TabsData, error) {
+func GetTabList() ([]define.Tab, error) {
 	rows, err := db.Query("SELECT * FROM tabs order by time_stamp desc")
 
 	if err != nil {
 		log.Error("queryAllTabs Query Error:", err)
 	}
-	var tabsData []define.TabsData
+	var tabList []define.Tab
 	for rows.Next() {
-		var tabs define.TabsData
-		err := rows.Scan(&tabs.Id, &tabs.Title, &tabs.IconUrl, &tabs.Url, &tabs.Describe, &tabs.SaveTime, &tabs.Status, &tabs.TimeStamp)
+		var tab define.Tab
+		err := rows.Scan(&tab.Id, &tab.Title, &tab.IconUrl, &tab.Url, &tab.Describe, &tab.SaveTime, &tab.Status, &tab.TimeStamp)
 		if err != nil {
 			log.Error("queryAllTabs Scan Error:", err)
 			return nil, err
 		}
-		tabsData = append(tabsData, tabs)
+		tabList = append(tabList, tab)
 	}
-	return tabsData, err
+	return tabList, err
 }
 
-func batchInsert(tabsDatas []define.TabsData) {
+func batchInsert(Tabs []define.Tab) {
 	tx, err := db.Begin()
 	if err != nil {
 		log.Error("batchInsert Begin Error:", err)
@@ -87,7 +87,7 @@ func batchInsert(tabsDatas []define.TabsData) {
 	}
 
 	timestamp := time.Now().Unix()
-	for _, d := range tabsDatas {
+	for _, d := range Tabs {
 		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime, timestamp)
 		if err != nil {
 			log.Error("batchInsert Exec Error:", err)
@@ -108,7 +108,7 @@ func batchInsert(tabsDatas []define.TabsData) {
 
 }
 
-func UpdateTab(tab define.TabsData) {
+func UpdateTab(tab define.Tab) {
 	tx, err := db.Begin()
 	if err != nil {
 		log.Error("UpdateTab Begin Error:", err)
@@ -134,7 +134,7 @@ func UpdateTab(tab define.TabsData) {
 	}
 }
 
-func DeleteTab(tab define.TabsData) {
+func DeleteTab(tab define.Tab) {
 	tx, err := db.Begin()
 	if err != nil {
 		log.Error("DeleteTab Begin Error:", err)

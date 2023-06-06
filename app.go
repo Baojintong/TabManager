@@ -31,7 +31,7 @@ func (a *App) Greet(name string) string {
 }
 
 func (a *App) GetTabList() H {
-	tabs, err := handle.QueryAllTabs()
+	tabList, err := handle.GetTabList()
 	if err != nil {
 		return M{
 			"code": -1,
@@ -40,13 +40,13 @@ func (a *App) GetTabList() H {
 	}
 	return M{
 		"code": 200,
-		"data": tabs,
+		"data": tabList,
 	}
 }
 
 func (a *App) UpdateTab(item string) H {
 	log.Info("UpdateTab start.......")
-	var tab define.TabsData
+	var tab define.Tab
 	err := json.Unmarshal([]byte(item), &tab)
 	if err != nil {
 		log.Error(" UpdateTab Error:", err)
@@ -60,7 +60,7 @@ func (a *App) UpdateTab(item string) H {
 
 func (a *App) DeleteTab(item string) H {
 	log.Info("DeleteTab start.......")
-	var tab define.TabsData
+	var tab define.Tab
 	err := json.Unmarshal([]byte(item), &tab)
 	if err != nil {
 		log.Error(" DeleteTab Error:", err)
@@ -83,5 +83,19 @@ func (a *App) SaveLabel(labels string) H {
 	return M{
 		"code": 200,
 		"data": "",
+	}
+}
+
+func (a *App) GetLabelList() H {
+	labelList, err := handle.GetLabelList()
+	if err != nil {
+		return M{
+			"code": -1,
+			"msg":  "ERROR : " + err.Error(),
+		}
+	}
+	return M{
+		"code": 200,
+		"data": labelList,
 	}
 }

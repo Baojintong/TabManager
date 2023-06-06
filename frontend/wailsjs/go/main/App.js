@@ -6,6 +6,10 @@ export function DeleteTab(arg1) {
   return window['go']['main']['App']['DeleteTab'](arg1);
 }
 
+export function GetLabelList() {
+  return window['go']['main']['App']['GetLabelList']();
+}
+
 export function GetTabList() {
   return window['go']['main']['App']['GetTabList']();
 }

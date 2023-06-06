@@ -1,6 +1,6 @@
 package define
 
-type TabsData struct {
+type Tab struct {
 	Id        uint32 `json:"id"`
 	Title     string `json:"title"`
 	Url       string `json:"url"`

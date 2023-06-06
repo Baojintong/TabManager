@@ -23,35 +23,34 @@
       </a-form-item>
 
       <a-form-item label="选择标签" name="label">
-        <a-tag color="pink">pink</a-tag>
-        <a-tag color="red">red</a-tag>
-        <a-tag color="orange">orange</a-tag>
-        <a-tag color="green">green</a-tag>
-        <a-tag color="cyan">cyan</a-tag>
-        <a-tag color="blue">blue</a-tag>
+        <a-tag v-for="label in labelList" :color="label.color">
+          {{ label.name }}
+        </a-tag>
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {reactive, ref} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
-import {UpdateTab} from "../../wailsjs/go/main/App.js";
+import {UpdateTab, GetLabelList} from "../../wailsjs/go/main/App.js";
+import { notification } from 'ant-design-vue';
 
-let props = defineProps(['data', 'getTabList'])
-const dialogVisible = ref(false)
-let item = {}
+let props = defineProps(['data', 'getTabList', 'labelList'])
+let dialogVisible = ref(false)
+let item = reactive({})
 let originalItem = {}
+let labelList = reactive([])
 
 if (props.data !== undefined) {
   item = props.data//reactive({...props.data});
   originalItem = JSON.parse(JSON.stringify(props.data));
 }
 
-onMounted(async () => {
-
-})
+if (props.labelList !== undefined) {
+  labelList = props.labelList
+}
 
 
 const onFinish = values => {
@@ -60,12 +59,19 @@ const onFinish = values => {
 const onFinishFailed = errorInfo => {
   console.log('Failed:', errorInfo);
 };
-
 const handleOk = e => {
   dialogVisible.value = false;
-  UpdateTab(JSON.stringify(item))
-  originalItem = JSON.parse(JSON.stringify(item));
-  props.getTabList()
+  UpdateTab(JSON.stringify(item)).then(res => {
+    if (res.code !== 200) {
+      notification['error']({
+        message: '更新失败',
+        description: '错误',
+      });
+    } else {
+      originalItem = JSON.parse(JSON.stringify(item));
+      props.getTabList()
+    }
+  })
 };
 
 const cancel = e => {
