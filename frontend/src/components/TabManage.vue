@@ -34,22 +34,21 @@
 <script setup>
 import {reactive, ref} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
-import {UpdateTab, GetLabelList} from "../../wailsjs/go/main/App.js";
-import { notification } from 'ant-design-vue';
+import {UpdateTab} from "../../wailsjs/go/main/App.js";
+import {setTabData, useLabelList, useTabData} from "../common.js"
+import {UPDATE_ERROR} from "../const.js";
 
-let props = defineProps(['data', 'getTabList', 'labelList'])
+let props = defineProps(['data'])
 let dialogVisible = ref(false)
 let item = reactive({})
 let originalItem = {}
-let labelList = reactive([])
+
+let labelList = useLabelList()
+let tabData = useTabData()
 
 if (props.data !== undefined) {
   item = props.data//reactive({...props.data});
   originalItem = JSON.parse(JSON.stringify(props.data));
-}
-
-if (props.labelList !== undefined) {
-  labelList = props.labelList
 }
 
 
@@ -63,19 +62,16 @@ const handleOk = e => {
   dialogVisible.value = false;
   UpdateTab(JSON.stringify(item)).then(res => {
     if (res.code !== 200) {
-      notification['error']({
-        message: '更新失败',
-        description: '错误',
-      });
+      Notification(UPDATE_ERROR)
     } else {
       originalItem = JSON.parse(JSON.stringify(item));
-      props.getTabList()
+      setTabData(tabData)
     }
   })
 };
 
 const cancel = e => {
   Object.assign(item, originalItem)
-  props.getTabList()
+  setTabData(tabData)
 };
 </script>

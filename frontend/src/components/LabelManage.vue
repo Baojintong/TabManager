@@ -14,19 +14,22 @@
         <ColorPicker :color="label.color.value" @color-change="updateColor"/>
       </a-form-item>
     </a-form>
+    <a-button type="primary" @click="add()">点击修改vuex中count的值</a-button>
   </a-modal>
 </template>
 <script setup>
 
-import {ref, reactive} from "vue";
+import {ref, reactive, computed} from "vue";
 import {ColorPicker} from 'vue-accessible-color-picker'
 import {SaveLabel, UpdateTab} from "../../wailsjs/go/main/App.js";
+import {setLabelList, useLabelList} from "../common.js"
+import {notification} from "ant-design-vue";
+import {SAVE_ERROR} from "../const.js";
 
 const dialogVisible = ref(false)
-
+const labelList = useLabelList()
 let props = defineProps(['data'])
 let label = {}
-
 if (props.data !== undefined) {
   label = props.data
   label = {
@@ -39,8 +42,6 @@ if (props.data !== undefined) {
     color: ref("hsl(177 34.09% 39.77% / 0.49)")
   }
 }
-
-
 const handleOk = e => {
   dialogVisible.value = false;
   let data = {
@@ -50,7 +51,14 @@ const handleOk = e => {
   if (data.name === '') {
     data.name = '自定义标签'
   }
-  SaveLabel(JSON.stringify(data))
+  SaveLabel(JSON.stringify(data)).then(res => {
+    if (res.code !== 200) {
+      Notification(SAVE_ERROR)
+    } else {
+      setLabelList(labelList)
+    }
+  })
+
 }
 
 const cancel = e => {

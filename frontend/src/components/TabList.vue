@@ -1,13 +1,13 @@
 <template>
   <main>
-    <div v-for="(items,time) in groupedData.value">
+    <div v-for="(items,time) in tabData">
       <div class="time_div">{{ time }}</div>
       <div v-for="item in items" class="text_div" ref="text_div">
         <div v-on:click="openUrl(item.url)" class="text_content_div">
           {{ item.title }}
         </div>
         <div class="text_button_div">
-          <TabManage :data="item" :getTabList="getTabList" :labelList="labelList"/>
+          <TabManage :data="item"/>
           <a-button type="ghost" shape="circle" size="large" class="button_del">
             <template #icon>
               <DeleteOutlined v-on:click="deleteItem(item)"/>
@@ -20,31 +20,30 @@
 </template>
 
 <script setup>
-import {DeleteTab, GetLabelList, GetTabList} from "../../wailsjs/go/main/App.js";
+import {DeleteTab, GetTabList} from "../../wailsjs/go/main/App.js";
 import {BrowserOpenURL} from "../../wailsjs/runtime";
-import {onMounted, reactive, ref, nextTick} from "vue";
+import {onMounted, reactive} from "vue";
 import {DeleteOutlined} from '@ant-design/icons-vue';
 import TabManage from "./TabManage.vue";
-import {notification} from "ant-design-vue";
+import {useLabelList, setLabelList, Notification, useTabData, setTabData} from "../common.js"
+import {DELETE_ERROR, QUERY_ERROR} from "../const.js";
 
 //赋值方式
 let groupedData = reactive({
   value: {}
 })
 
-let labelList = reactive([])
+const labelList = useLabelList()
+const tabData = useTabData()
 
-const getTabList = () => {
+const getTabData = () => {
   GetTabList().then(res => {
     if (res.code !== 200) {
-      notification['error']({
-        message: '数据获取失败',
-        description: '错误',
-      });
+      Notification(QUERY_ERROR)
     }
     let list = res.data
     if (Array.isArray(list) && !(list.length === 0)) {
-      groupedData.value = list.reduce((acc, cur) => {
+      tabData.value = list.reduce((acc, cur) => {
         const time = cur.saveTime;
         if (!acc[time]) {
           acc[time] = [];
@@ -53,30 +52,17 @@ const getTabList = () => {
         return acc;
       }, {})
     } else {
-      groupedData.value = {}
+      tabData.value = {}
     }
   })
 }
 
-const getLabel = () => {
-  GetLabelList().then(res => {
-    if (res.code !== 200) {
-      notification['error']({
-        message: '标签获取失败',
-        description: '错误',
-      });
-    }
-    labelList = res.data
-    console.log("--------2"+JSON.stringify(labelList))
-  })
-  console.log("--------1"+JSON.stringify(labelList))
-}
-
-onMounted(async () => {
+onMounted(() => {
   //setInterval(() => {
-  getTabList()
+  //setTabData(tabData)
+  getTabData(tabData)
   //}, 2000);
-  getLabel()
+  setLabelList(labelList)
 })
 
 const openUrl = (url) => {
@@ -86,12 +72,9 @@ const openUrl = (url) => {
 const deleteItem = (obj) => {
   DeleteTab(JSON.stringify(obj)).then(res => {
     if (res.code !== 200) {
-      notification['error']({
-        message: '删除失败',
-        description: '错误',
-      });
+      Notification(DELETE_ERROR)
     } else {
-      getTabList()
+      setTabData(tabData)
     }
   })
 }
