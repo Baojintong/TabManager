@@ -11,8 +11,6 @@ import (
 	"time"
 )
 
-var db DbHandle = new(DbHandleImpl)
-
 func TabHandler(w http.ResponseWriter, r *http.Request) {
 	log.Info("TabHandler.........")
 	var body, err = io.ReadAll(r.Body)
@@ -46,8 +44,10 @@ func saveTab(Tabs []define.Tab) {
 }
 
 func createTabTable() {
+	db.Connect()
 	db.Exec("create table if not exists tabs " +
 		"(id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)")
+	db.Close()
 }
 
 func GetTabList() []define.Tab {

@@ -90,13 +90,7 @@ func (a *App) SaveLabel(labels string) H {
 }
 
 func (a *App) GetLabelList() H {
-	labelList, err := handle.GetLabelList()
-	if err != nil {
-		return M{
-			"code": -1,
-			"msg":  "ERROR : " + err.Error(),
-		}
-	}
+	labelList := handle.GetLabelList()
 	return M{
 		"code": 200,
 		"data": labelList,
