@@ -5,7 +5,6 @@ import (
 	"tabManager/internal/define"
 )
 
-var db DbHandle = new(DbHandleImpl)
 
 func SaveLabel(label define.Label) {
 	createLabelTable()
@@ -13,20 +12,15 @@ func SaveLabel(label define.Label) {
 }
 
 func saveLabel(label define.Label) {
-	db.Connect()
 	db.Exec("INSERT INTO label(name,color) VALUES (?,?)", label.Name, label.Color)
-	db.Close()
 }
 
 func createLabelTable() {
-	db.Connect()
 	db.Exec("create table if not exists label" +
 		"(id integer not null constraint label_pk primary key autoincrement, name TEXT default '自定义标签' not null, color TEXT not null );")
-	db.Close()
 }
 
 func GetLabelList() []define.Label {
-	db.Connect()
 	rows := db.Query("select * from label")
 	var labelList []define.Label
 	for rows.Next() {
@@ -38,6 +32,5 @@ func GetLabelList() []define.Label {
 		}
 		labelList = append(labelList, label)
 	}
-	db.Close()
 	return labelList
 }

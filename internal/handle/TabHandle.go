@@ -26,11 +26,15 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	now := time.Now()
 	nowDate := now.Format("2006-01-02")
+	timestamp := time.Now().Unix()
+	var interfaces []interface{}
 	for i, n := 0, len(Tab); i < n; i++ {
 		Tab[i].Describe = Tab[i].Title
 		Tab[i].SaveTime = nowDate
+		Tab[i].TimeStamp = timestamp
+		interfaces = append(interfaces, Tab[i])
 	}
-	saveTab(Tab)
+	saveTab(interfaces)
 
 	_, err = w.Write([]byte("success"))
 	if err != nil {
@@ -38,20 +42,17 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func saveTab(Tabs []define.Tab) {
+func saveTab(datas []interface{}) {
 	createTabTable()
-	batchInsert(Tabs)
+	batchInsert(datas)
 }
 
 func createTabTable() {
-	db.Connect()
 	db.Exec("create table if not exists tabs " +
 		"(id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)")
-	db.Close()
 }
 
 func GetTabList() []define.Tab {
-	db.Connect()
 	rows := db.Query("SELECT * FROM tabs order by time_stamp desc")
 	var tabList []define.Tab
 	for rows.Next() {
@@ -63,30 +64,17 @@ func GetTabList() []define.Tab {
 		}
 		tabList = append(tabList, tab)
 	}
-	db.Close()
 	return tabList
 }
 
-func batchInsert(Tabs []define.Tab) {
-	db.Connect()
-	var interfaces []interface{}
-	timestamp := time.Now().Unix()
-	for _, tab := range Tabs {
-		tab.TimeStamp = timestamp
-		interfaces = append(interfaces, tab)
-	}
-	db.BatchExec("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (:title,:iconUrl,:url,:describe,:saveTime,:timeStamp)", interfaces)
-	db.Close()
+func batchInsert(datas []interface{}) {
+	db.BatchExec("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (:title,:iconUrl,:url,:describe,:saveTime,:timeStamp)", datas)
 }
 
 func UpdateTab(tab define.Tab) {
-	db.Connect()
 	db.Exec("UPDATE tabs SET title=?,`describe`=? WHERE id=?", tab.Title, tab.Describe, tab.Id)
-	db.Close()
 }
 
 func DeleteTab(tab define.Tab) {
-	db.Connect()
 	db.Exec("DELETE FROM tabs WHERE id=?", tab.Id)
-	db.Close()
 }
