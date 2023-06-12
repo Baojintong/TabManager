@@ -2,7 +2,6 @@ package handle
 
 import (
 	"C"
-	"database/sql"
 	"encoding/json"
 	"github.com/labstack/gommon/log"
 	_ "github.com/mattn/go-sqlite3"
@@ -12,8 +11,7 @@ import (
 	"time"
 )
 
-var dbPath = "./db/tabs.db"
-var db, _ = sql.Open("sqlite3", define.DATA_SOURCE_NAME)
+var db DbHandle = new(DbHandleImpl)
 
 func TabHandler(w http.ResponseWriter, r *http.Request) {
 	log.Info("TabHandler.........")
@@ -48,114 +46,47 @@ func saveTab(Tabs []define.Tab) {
 }
 
 func createTabTable() {
-	var _, err = db.Exec("create table if not exists tabs " +
+	db.Exec("create table if not exists tabs " +
 		"(id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)")
-	if err != nil {
-		log.Error("createTabTable Error:", err)
-	}
 }
 
-func GetTabList() ([]define.Tab, error) {
-	rows, err := db.Query("SELECT * FROM tabs order by time_stamp desc")
-
-	if err != nil {
-		log.Error("queryAllTabs Query Error:", err)
-	}
+func GetTabList() []define.Tab {
+	db.Connect()
+	rows := db.Query("SELECT * FROM tabs order by time_stamp desc")
 	var tabList []define.Tab
 	for rows.Next() {
 		var tab define.Tab
 		err := rows.Scan(&tab.Id, &tab.Title, &tab.IconUrl, &tab.Url, &tab.Describe, &tab.SaveTime, &tab.Status, &tab.TimeStamp)
 		if err != nil {
 			log.Error("queryAllTabs Scan Error:", err)
-			return nil, err
+			return nil
 		}
 		tabList = append(tabList, tab)
 	}
-	return tabList, err
+	db.Close()
+	return tabList
 }
 
 func batchInsert(Tabs []define.Tab) {
-	tx, err := db.Begin()
-	if err != nil {
-		log.Error("batchInsert Begin Error:", err)
-	}
-	defer tx.Rollback()
-
-	stmt, err := tx.Prepare("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (?,?,?,?,?,?)")
-	if err != nil {
-		log.Error("batchInsert Prepare Error:", err)
-	}
-
+	db.Connect()
+	var interfaces []interface{}
 	timestamp := time.Now().Unix()
-	for _, d := range Tabs {
-		_, err = stmt.Exec(d.Title, d.IconUrl, d.Url, d.Describe, d.SaveTime, timestamp)
-		if err != nil {
-			log.Error("batchInsert Exec Error:", err)
-		}
+	for _, tab := range Tabs {
+		tab.TimeStamp = timestamp
+		interfaces = append(interfaces, tab)
 	}
-
-	defer func(stmt *sql.Stmt) {
-		err := stmt.Close()
-		if err != nil {
-			log.Error("batchInsert Close Error:", err)
-		}
-	}(stmt)
-
-	err = tx.Commit()
-	if err != nil {
-		log.Error("batchInsert Commit Error:", err)
-	}
-
+	db.BatchExec("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (:title,:iconUrl,:url,:describe,:saveTime,:timeStamp)", interfaces)
+	db.Close()
 }
 
 func UpdateTab(tab define.Tab) {
-	tx, err := db.Begin()
-	if err != nil {
-		log.Error("UpdateTab Begin Error:", err)
-	}
-	defer tx.Rollback()
-
-	stmt, err := db.Prepare("UPDATE tabs SET title=?,`describe`=? WHERE id=?")
-	_, err = stmt.Exec(tab.Title, tab.Describe, tab.Id)
-	if err != nil {
-		log.Error("UpdateTab Exec error:", err)
-	}
-
-	defer func(stmt *sql.Stmt) {
-		err := stmt.Close()
-		if err != nil {
-			log.Error("UpdateTab Close error:", err)
-		}
-	}(stmt)
-
-	err = tx.Commit()
-	if err != nil {
-		log.Error("UpdateTab Commit Error:", err)
-	}
+	db.Connect()
+	db.Exec("UPDATE tabs SET title=?,`describe`=? WHERE id=?", tab.Title, tab.Describe, tab.Id)
+	db.Close()
 }
 
 func DeleteTab(tab define.Tab) {
-	tx, err := db.Begin()
-	if err != nil {
-		log.Error("DeleteTab Begin Error:", err)
-	}
-	defer tx.Rollback()
-
-	stmt, err := db.Prepare("DELETE FROM tabs WHERE id=?")
-	_, err = stmt.Exec(tab.Id)
-	if err != nil {
-		log.Error("DeleteTab Exec error:", err)
-	}
-
-	defer func(stmt *sql.Stmt) {
-		err := stmt.Close()
-		if err != nil {
-			log.Error("DeleteTab Close error:", err)
-		}
-	}(stmt)
-
-	err = tx.Commit()
-	if err != nil {
-		log.Error("DeleteTab Commit Error:", err)
-	}
+	db.Connect()
+	db.Exec("DELETE FROM tabs WHERE id=?", tab.Id)
+	db.Close()
 }

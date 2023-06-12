@@ -14,7 +14,6 @@
         <ColorPicker :color="label.color.value" @color-change="updateColor"/>
       </a-form-item>
     </a-form>
-    <a-button type="primary" @click="add()">点击修改vuex中count的值</a-button>
   </a-modal>
 </template>
 <script setup>
