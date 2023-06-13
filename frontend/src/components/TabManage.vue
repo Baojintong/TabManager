@@ -51,7 +51,6 @@ if (props.data !== undefined) {
   originalItem = JSON.parse(JSON.stringify(props.data));
 }
 
-
 const onFinish = values => {
   console.log('Success:', values);
 };
@@ -74,7 +73,4 @@ const cancel = e => {
   Object.assign(item, originalItem)
   setTabData(tabData)
 };
-
-onMounted(() => {
-})
 </script>

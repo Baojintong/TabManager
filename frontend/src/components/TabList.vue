@@ -2,7 +2,7 @@
   <main>
     <div v-for="(items,time) in tabData">
       <div class="time_div">{{ time }}</div>
-      <div v-for="item in items" class="text_div" ref="text_div">
+      <div v-for="item in items" class="text_div" ref="text_div" :key="item.id"> 
         <div v-on:click="openUrl(item.url)" class="text_content_div">
           {{ item.title }}
         </div>
@@ -33,8 +33,8 @@ const labelList = useLabelList()
 const tabData = useTabData()
 
 onMounted(() => {
-  resetTabData()
   setLabelList(labelList)
+  setTabData(tabData)
   window.runtime.EventsOn('flushTabs',resetTabData)
 })
 
@@ -51,7 +51,7 @@ const deleteItem = (obj) => {
     if (res.code !== 200) {
       Notification(DELETE_ERROR)
     } else {
-      resetTabData()
+      setTabData(tabData)
     }
   })
 }
