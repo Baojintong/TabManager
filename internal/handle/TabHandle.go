@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/labstack/gommon/log"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"io"
 	"net/http"
 	"tabManager/internal/define"
@@ -40,6 +41,7 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error(" tabsHandler resp Error:", err)
 	}
+	runtime.EventsEmit(*context_, "flushTabs")
 }
 
 func saveTab(datas []interface{}) {

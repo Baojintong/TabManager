@@ -20,53 +20,33 @@
 </template>
 
 <script setup>
-import {DeleteTab, GetTabList} from "../../wailsjs/go/main/App.js";
+import {DeleteTab} from "../../wailsjs/go/main/App.js";
 import {BrowserOpenURL} from "../../wailsjs/runtime";
-import {onMounted, reactive} from "vue";
+import {onMounted} from "vue";
 import {DeleteOutlined} from '@ant-design/icons-vue';
 import TabManage from "./TabManage.vue";
 import {useLabelList, setLabelList, Notification, useTabData, setTabData} from "../common.js"
-import {DELETE_ERROR, QUERY_ERROR} from "../const.js";
+import {DELETE_ERROR} from "../const.js";
 
-//赋值方式
-let groupedData = reactive({
-  value: {}
-})
 
 const labelList = useLabelList()
 const tabData = useTabData()
 
-const getTabData = () => {
-  GetTabList().then(res => {
-    if (res.code !== 200) {
-      Notification(QUERY_ERROR)
-    }
-    let list = res.data
-    if (Array.isArray(list) && !(list.length === 0)) {
-      tabData.value = list.reduce((acc, cur) => {
-        const time = cur.saveTime;
-        if (!acc[time]) {
-          acc[time] = [];
-        }
-        acc[time].push(cur);
-        return acc;
-      }, {})
-    } else {
-      tabData.value = {}
-    }
-  })
-}
-
 onMounted(() => {
   //setInterval(() => {
-  //setTabData(tabData)
-  getTabData(tabData)
+  resetTabData()
+  //getTabData()
   //}, 2000);
   setLabelList(labelList)
+  window.runtime.EventsOn('flushTabs',resetTabData)
 })
 
 const openUrl = (url) => {
   BrowserOpenURL(url);
+}
+
+const resetTabData = () =>{
+  setTabData(tabData)
 }
 
 const deleteItem = (obj) => {
@@ -74,7 +54,7 @@ const deleteItem = (obj) => {
     if (res.code !== 200) {
       Notification(DELETE_ERROR)
     } else {
-      setTabData(tabData)
+      resetTabData()
     }
   })
 }

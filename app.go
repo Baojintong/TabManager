@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/labstack/gommon/log"
 	"tabManager/internal/define"
 	"tabManager/internal/handle"
@@ -19,15 +18,11 @@ func NewApp() *App {
 	return &App{}
 }
 
-// startup is called when the app starts. The context is saved
+// startup is called when the app starts. The context is saved,
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-}
-
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+	handle.SetContext(ctx)
 }
 
 func (a *App) GetTabList() H {

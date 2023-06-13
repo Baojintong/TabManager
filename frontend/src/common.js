@@ -38,7 +38,6 @@ export const setTabData = (tabData) => {
         } else {
             tabData.value = {}
         }
-        console.log(JSON.stringify(tabData.value))
     })
 }
 

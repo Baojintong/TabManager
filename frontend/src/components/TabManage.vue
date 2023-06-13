@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {reactive, ref,onMounted} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
 import {UpdateTab} from "../../wailsjs/go/main/App.js";
 import {setTabData, useLabelList, useTabData} from "../common.js"
@@ -74,4 +74,7 @@ const cancel = e => {
   Object.assign(item, originalItem)
   setTabData(tabData)
 };
+
+onMounted(() => {
+})
 </script>
