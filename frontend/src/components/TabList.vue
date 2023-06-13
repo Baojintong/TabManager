@@ -33,10 +33,7 @@ const labelList = useLabelList()
 const tabData = useTabData()
 
 onMounted(() => {
-  //setInterval(() => {
   resetTabData()
-  //getTabData()
-  //}, 2000);
   setLabelList(labelList)
   window.runtime.EventsOn('flushTabs',resetTabData)
 })
