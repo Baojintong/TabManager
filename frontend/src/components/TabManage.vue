@@ -23,16 +23,20 @@
       </a-form-item>
 
       <a-form-item label="选择标签" name="label">
-        <a-tag v-for="label in labelList" :color="label.color">
+        <a-checkable-tag v-for="label in labelList" :color="label.color"
+                         :style="{borderColor:label.color}"
+                         :checked="state.selectedTags.indexOf(label.id) > -1"
+                         @change="checked => handleChange(label.id, checked)"
+        >
           {{ label.name }}
-        </a-tag>
+        </a-checkable-tag>
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script setup>
-import {reactive, ref,onMounted} from "vue";
+import {reactive, ref, onMounted} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
 import {UpdateTab} from "../../wailsjs/go/main/App.js";
 import {setLabelList, setTabData, useLabelList, useTabData} from "../common.js"
@@ -47,7 +51,7 @@ let labelList = useLabelList()
 let tabData = useTabData()
 
 if (props.data !== undefined) {
-  item = props.data//reactive({...props.data});
+  item = props.data
   originalItem = JSON.parse(JSON.stringify(props.data));
 }
 
@@ -72,9 +76,22 @@ const handleOk = e => {
 const cancel = e => {
   Object.assign(item, originalItem)
   setTabData(tabData)
+  state.selectedTags=[]
 };
 
 onMounted(() => {
   setLabelList(labelList)
 })
+
+const state = reactive({
+  selectedTags: [],
+});
+const handleChange = (labelId, checked) => {
+  const {
+    selectedTags,
+  } = state;
+  const nextSelectedTags = checked ? [...selectedTags, labelId] : selectedTags.filter(t => t !== labelId);
+  console.log('You are interested in: ', nextSelectedTags);
+  state.selectedTags = nextSelectedTags;
+};
 </script>
