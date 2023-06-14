@@ -29,11 +29,9 @@ import {useLabelList, setLabelList, Notification, useTabData, setTabData} from "
 import {DELETE_ERROR} from "../const.js";
 
 
-const labelList = useLabelList()
 const tabData = useTabData()
 
 onMounted(() => {
-  setLabelList(labelList)
   setTabData(tabData)
   window.runtime.EventsOn('flushTabs',resetTabData)
 })

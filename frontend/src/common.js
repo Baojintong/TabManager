@@ -46,7 +46,12 @@ export function useLabelList() {
 
     return computed({
         get() {
-            return store.state.labelList
+            return store.state.labelList.map((label, index) => {
+                return {
+                    ...label,
+                    checked: false
+                }
+            })
         },
         set(val) {
             store.commit('setLabelList', val)

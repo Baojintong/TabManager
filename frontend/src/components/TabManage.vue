@@ -35,7 +35,7 @@
 import {reactive, ref,onMounted} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
 import {UpdateTab} from "../../wailsjs/go/main/App.js";
-import {setTabData, useLabelList, useTabData} from "../common.js"
+import {setLabelList, setTabData, useLabelList, useTabData} from "../common.js"
 import {UPDATE_ERROR} from "../const.js";
 
 let props = defineProps(['data'])
@@ -73,4 +73,8 @@ const cancel = e => {
   Object.assign(item, originalItem)
   setTabData(tabData)
 };
+
+onMounted(() => {
+  setLabelList(labelList)
+})
 </script>
