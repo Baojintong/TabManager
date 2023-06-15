@@ -5,23 +5,21 @@ import (
 	"tabManager/internal/define"
 )
 
-
 func SaveLabel(label define.Label) {
 	createLabelTable()
 	saveLabel(label)
 }
 
 func saveLabel(label define.Label) {
-	db.Exec("INSERT INTO label(name,color) VALUES (?,?)", label.Name, label.Color)
+	db.Exec(define.INSERT_LABEL, label.Name, label.Color)
 }
 
 func createLabelTable() {
-	db.Exec("create table if not exists label" +
-		"(id integer not null constraint label_pk primary key autoincrement, name TEXT default '自定义标签' not null, color TEXT not null );")
+	db.Exec(define.CREATE_LABEL_TABLE)
 }
 
 func GetLabelList() []define.Label {
-	rows := db.Query("select * from label")
+	rows := db.Query(define.SELECT_LABEL)
 	var labelList []define.Label
 	for rows.Next() {
 		var label define.Label

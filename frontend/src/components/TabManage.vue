@@ -24,7 +24,7 @@
 
       <a-form-item label="选择标签" name="label">
         <a-checkable-tag v-for="label in labelList"
-                         :style="{borderColor:label.color,color:label.color}"
+                         :style="{borderColor:label.color}"
                          :checked="state.selectedTags.indexOf(label.id) > -1"
                          @change="checked => handleChange(label.id, checked)"
         >
@@ -100,12 +100,18 @@ const handleChange = (labelId, checked) => {
 };
 
 const getTabLabel = (tabId) => {
-  console.log("tabId:",tabId)
   GetTabLabelList(tabId).then(res => {
     if (res.code !== 200) {
       Notification('标签获取失败')
     }
-    console.log(JSON.stringify(res.data))
+    let tabLabelList = res.data
+    if (Array.isArray(tabLabelList) && tabLabelList.length !== 0) {
+      const labelIds = tabLabelList.map((it) => {
+        return it.labelId;
+      });
+      state.selectedTags = [...state.selectedTags, ...labelIds]
+    }
+
   })
 };
 </script>

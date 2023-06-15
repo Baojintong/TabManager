@@ -50,15 +50,12 @@ func saveTab(datas []interface{}) {
 }
 
 func createTabTable() {
-	db.Exec("create table if not exists tabs " +
-		"(id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)")
-
-	db.Exec("create table if not exists tab_label" +
-		"(id integer not null constraint tab_label_pk primary key autoincrement,tab_id integer not null, label_id integer not null)")
+	db.Exec(define.CREATE_TAB_TABLE)
+	db.Exec(define.CREATE_TAB_LABEL_TABLE)
 }
 
 func GetTabList() []define.Tab {
-	rows := db.Query("SELECT * FROM tabs order by time_stamp desc")
+	rows := db.Query(define.SELECT_TAB_LIST)
 	var tabList []define.Tab
 	for rows.Next() {
 		var tab define.Tab
@@ -73,15 +70,15 @@ func GetTabList() []define.Tab {
 }
 
 func batchInsert(datas []interface{}) {
-	db.BatchExec("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (:title,:iconUrl,:url,:describe,:saveTime,:timeStamp)", datas)
+	db.BatchExec(define.INSERT_TAB, datas)
 }
 
-func batchInsertTagLabel(datas []interface{}) {
-	db.BatchExec("INSERT INTO tab_label(tab_id, label_id) VALUES (:tabId,:labelId)", datas)
+func batchInsertTabLabel(datas []interface{}) {
+	db.BatchExec(define.INSERT_TAB_LABEL, datas)
 }
 
 func UpdateTab(tab define.Tab) {
-	db.Exec("UPDATE tabs SET title=?,`describe`=? WHERE id=?", tab.Title, tab.Describe, tab.Id)
+	db.Exec(define.UPDATE_TAB, tab.Title, tab.Describe, tab.Id)
 	tabId := tab.Id
 	labelIds := tab.LabelIds
 	var interfaces []interface{}
@@ -93,23 +90,23 @@ func UpdateTab(tab define.Tab) {
 		interfaces = append(interfaces, tagLabel)
 	}
 	cleanTabLabel(tabId)
-	batchInsertTagLabel(interfaces)
+	batchInsertTabLabel(interfaces)
 }
 
 func DeleteTab(tab define.Tab) {
-	db.Exec("DELETE FROM tabs WHERE id=?", tab.Id)
+	db.Exec(define.DELETE_TAB, tab.Id)
 }
 
 func cleanTabLabel(tabId uint32) {
-	db.Exec("DELETE FROM tab_label WHERE tab_id=?", tabId)
+	db.Exec(define.DELETE_TAB_LABEL, tabId)
 }
 
 func QueryTabLabel(tabId uint32) []define.TagLabel {
-	rows := db.Query("SELECT * FROM tab_label WHERE tab_id=?", tabId)
+	rows := db.Query(define.SELECT_TAB_LABEL, tabId)
 	var tagLabelList []define.TagLabel
 	for rows.Next() {
 		var tagLabel define.TagLabel
-		err := rows.Scan(&tagLabel.Id, &tagLabel.LabelId, &tagLabel.TabId)
+		err := rows.Scan(&tagLabel.Id, &tagLabel.TabId, &tagLabel.LabelId)
 		if err != nil {
 			log.Error("queryTabLabel Scan Error:", err)
 			return nil
