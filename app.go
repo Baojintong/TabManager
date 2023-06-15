@@ -34,7 +34,7 @@ func (a *App) GetTabList() H {
 }
 
 func (a *App) UpdateTab(item string) H {
-	log.Info("UpdateTab start.......")
+	log.Info("UpdateTab start.......:", item)
 	var tab define.Tab
 	err := json.Unmarshal([]byte(item), &tab)
 	if err != nil {
@@ -89,5 +89,13 @@ func (a *App) GetLabelList() H {
 	return M{
 		"code": 200,
 		"data": labelList,
+	}
+}
+
+func (a *App) GetTabLabelList(tagId uint32) H {
+	list := handle.QueryTabLabel(tagId)
+	return M{
+		"code": 200,
+		"data": list,
 	}
 }

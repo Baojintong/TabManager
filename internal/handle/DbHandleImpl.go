@@ -34,6 +34,7 @@ func (db *DbHandleImpl) BatchExec(sql_ string, datas []interface{}) {
 		if err != nil {
 			panic(err)
 		}
+		log.Info("sql_:", sql_)
 		for _, v := range datas {
 			value := reflect.ValueOf(v)
 			t := value.Type()
@@ -62,6 +63,7 @@ func (db *DbHandleImpl) Exec(sql_ string, args ...any) {
 		}
 		result := execStmt(stmt, args...)
 		count, _ := result.RowsAffected()
+		log.Info("sql_:", sql_)
 		log.Info("exec count:", count)
 
 		err = stmt.Close()

@@ -52,6 +52,9 @@ func saveTab(datas []interface{}) {
 func createTabTable() {
 	db.Exec("create table if not exists tabs " +
 		"(id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)")
+
+	db.Exec("create table if not exists tab_label" +
+		"(id integer not null constraint tab_label_pk primary key autoincrement,tab_id integer not null, label_id integer not null)")
 }
 
 func GetTabList() []define.Tab {
@@ -73,10 +76,45 @@ func batchInsert(datas []interface{}) {
 	db.BatchExec("INSERT INTO tabs(title,icon_url,url,describe,save_time,time_stamp) VALUES (:title,:iconUrl,:url,:describe,:saveTime,:timeStamp)", datas)
 }
 
+func batchInsertTagLabel(datas []interface{}) {
+	db.BatchExec("INSERT INTO tab_label(tab_id, label_id) VALUES (:tabId,:labelId)", datas)
+}
+
 func UpdateTab(tab define.Tab) {
 	db.Exec("UPDATE tabs SET title=?,`describe`=? WHERE id=?", tab.Title, tab.Describe, tab.Id)
+	tabId := tab.Id
+	labelIds := tab.LabelIds
+	var interfaces []interface{}
+	for i, n := 0, len(labelIds); i < n; i++ {
+		labelId := labelIds[i]
+		tagLabel := define.TagLabel{}
+		tagLabel.TabId = tabId
+		tagLabel.LabelId = labelId
+		interfaces = append(interfaces, tagLabel)
+	}
+	cleanTabLabel(tabId)
+	batchInsertTagLabel(interfaces)
 }
 
 func DeleteTab(tab define.Tab) {
 	db.Exec("DELETE FROM tabs WHERE id=?", tab.Id)
+}
+
+func cleanTabLabel(tabId uint32) {
+	db.Exec("DELETE FROM tab_label WHERE tab_id=?", tabId)
+}
+
+func QueryTabLabel(tabId uint32) []define.TagLabel {
+	rows := db.Query("SELECT * FROM tab_label WHERE tab_id=?", tabId)
+	var tagLabelList []define.TagLabel
+	for rows.Next() {
+		var tagLabel define.TagLabel
+		err := rows.Scan(&tagLabel.Id, &tagLabel.LabelId, &tagLabel.TabId)
+		if err != nil {
+			log.Error("queryTabLabel Scan Error:", err)
+			return nil
+		}
+		tagLabelList = append(tagLabelList, tagLabel)
+	}
+	return tagLabelList
 }

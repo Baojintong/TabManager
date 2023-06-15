@@ -6,6 +6,8 @@ export function DeleteTab(arg1:string):Promise<main.H>;
 
 export function GetLabelList():Promise<main.H>;
 
+export function GetTabLabelList(arg1:number):Promise<main.H>;
+
 export function GetTabList():Promise<main.H>;
 
 export function SaveLabel(arg1:string):Promise<main.H>;

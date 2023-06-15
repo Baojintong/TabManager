@@ -23,8 +23,8 @@
       </a-form-item>
 
       <a-form-item label="选择标签" name="label">
-        <a-checkable-tag v-for="label in labelList" :color="label.color"
-                         :style="{borderColor:label.color}"
+        <a-checkable-tag v-for="label in labelList"
+                         :style="{borderColor:label.color,color:label.color}"
                          :checked="state.selectedTags.indexOf(label.id) > -1"
                          @change="checked => handleChange(label.id, checked)"
         >
@@ -38,15 +38,15 @@
 <script setup>
 import {reactive, ref, onMounted} from "vue";
 import {EditOutlined} from "@ant-design/icons-vue";
-import {UpdateTab} from "../../wailsjs/go/main/App.js";
-import {setLabelList, setTabData, useLabelList, useTabData} from "../common.js"
+import {GetLabelList, GetTabLabelList, UpdateTab} from "../../wailsjs/go/main/App.js";
+import {Notification, setLabelList, setTabData, useLabelList, useTabData} from "../common.js"
 import {UPDATE_ERROR} from "../const.js";
 
 let props = defineProps(['data'])
 let dialogVisible = ref(false)
 let item = reactive({})
 let originalItem = {}
-
+let nextSelectedTags = []
 let labelList = useLabelList()
 let tabData = useTabData()
 
@@ -63,6 +63,7 @@ const onFinishFailed = errorInfo => {
 };
 const handleOk = e => {
   dialogVisible.value = false;
+  item.labelIds = nextSelectedTags
   UpdateTab(JSON.stringify(item)).then(res => {
     if (res.code !== 200) {
       Notification(UPDATE_ERROR)
@@ -71,16 +72,20 @@ const handleOk = e => {
       setTabData(tabData)
     }
   })
+  state.selectedTags = []
+  nextSelectedTags = []
 };
 
 const cancel = e => {
   Object.assign(item, originalItem)
   setTabData(tabData)
-  state.selectedTags=[]
+  state.selectedTags = []
+  nextSelectedTags = []
 };
 
 onMounted(() => {
   setLabelList(labelList)
+  getTabLabel(item.id)
 })
 
 const state = reactive({
@@ -90,8 +95,17 @@ const handleChange = (labelId, checked) => {
   const {
     selectedTags,
   } = state;
-  const nextSelectedTags = checked ? [...selectedTags, labelId] : selectedTags.filter(t => t !== labelId);
-  console.log('You are interested in: ', nextSelectedTags);
+  nextSelectedTags = checked ? [...selectedTags, labelId] : selectedTags.filter(t => t !== labelId);
   state.selectedTags = nextSelectedTags;
+};
+
+const getTabLabel = (tabId) => {
+  console.log("tabId:",tabId)
+  GetTabLabelList(tabId).then(res => {
+    if (res.code !== 200) {
+      Notification('标签获取失败')
+    }
+    console.log(JSON.stringify(res.data))
+  })
 };
 </script>
