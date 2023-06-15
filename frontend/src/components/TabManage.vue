@@ -49,6 +49,7 @@ let originalItem = {}
 let nextSelectedTags = []
 let labelList = useLabelList()
 let tabData = useTabData()
+let labelIds = []
 
 if (props.data !== undefined) {
   item = props.data
@@ -72,15 +73,15 @@ const handleOk = e => {
       setTabData(tabData)
     }
   })
-  state.selectedTags = []
   nextSelectedTags = []
+  state.selectedTags = labelIds
 };
 
 const cancel = e => {
   Object.assign(item, originalItem)
   setTabData(tabData)
-  state.selectedTags = []
   nextSelectedTags = []
+  state.selectedTags = labelIds
 };
 
 onMounted(() => {
@@ -100,18 +101,18 @@ const handleChange = (labelId, checked) => {
 };
 
 const getTabLabel = (tabId) => {
+  console.log("getTabLabel...........")
   GetTabLabelList(tabId).then(res => {
     if (res.code !== 200) {
       Notification('标签获取失败')
     }
     let tabLabelList = res.data
     if (Array.isArray(tabLabelList) && tabLabelList.length !== 0) {
-      const labelIds = tabLabelList.map((it) => {
+      labelIds = tabLabelList.map((it) => {
         return it.labelId;
       });
       state.selectedTags = [...state.selectedTags, ...labelIds]
     }
-
   })
 };
 </script>
