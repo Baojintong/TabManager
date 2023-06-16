@@ -10,6 +10,10 @@ export function GetLabelList() {
   return window['go']['main']['App']['GetLabelList']();
 }
 
+export function GetTab(arg1) {
+  return window['go']['main']['App']['GetTab'](arg1);
+}
+
 export function GetTabLabelList(arg1) {
   return window['go']['main']['App']['GetTabLabelList'](arg1);
 }

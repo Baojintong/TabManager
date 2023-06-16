@@ -1,10 +1,4 @@
 <template>
-  <a-button type="ghost" shape="circle" size="large" @click="dialogVisible = true" class="button_edit">
-    <template #icon>
-      <EditOutlined/>
-    </template>
-  </a-button>
-
   <a-modal v-model:open="dialogVisible" title="编辑" @ok="handleOk" @cancel="cancel">
     <a-form
         name="basic"
@@ -37,24 +31,30 @@
 
 <script setup>
 import {reactive, ref, onMounted} from "vue";
-import {EditOutlined} from "@ant-design/icons-vue";
-import {GetLabelList, GetTabLabelList, UpdateTab} from "../../wailsjs/go/main/App.js";
-import {Notification, setLabelList, setTabData, useLabelList, useTabData} from "../common.js"
+import {GetTabLabelList, UpdateTab,GetTab} from "../../wailsjs/go/main/App.js";
+import {
+  Notification,
+  setLabelList,
+  setTabData,
+  useLabelList,
+  useTabData,
+  resetShowTabManageId,
+  showTabManageId
+} from "../common.js"
 import {UPDATE_ERROR} from "../const.js";
 
 let props = defineProps(['data'])
 let dialogVisible = ref(false)
 let item = reactive({})
-let originalItem = {}
 let nextSelectedTags = []
 let labelList = useLabelList()
 let tabData = useTabData()
 let labelIds = []
+const tabId = showTabManageId()
+const state = reactive({
+  selectedTags: [],
+});
 
-if (props.data !== undefined) {
-  item = props.data
-  originalItem = JSON.parse(JSON.stringify(props.data));
-}
 
 const onFinish = values => {
   console.log('Success:', values);
@@ -69,29 +69,23 @@ const handleOk = e => {
     if (res.code !== 200) {
       Notification(UPDATE_ERROR)
     } else {
-      originalItem = JSON.parse(JSON.stringify(item));
       setTabData(tabData)
     }
   })
-  nextSelectedTags = []
-  state.selectedTags = labelIds
+  resetShowTabManageId(tabId)
 };
 
 const cancel = e => {
-  Object.assign(item, originalItem)
   setTabData(tabData)
-  nextSelectedTags = []
-  state.selectedTags = labelIds
+  resetShowTabManageId(tabId)
 };
 
 onMounted(() => {
   setLabelList(labelList)
-  getTabLabel(item.id)
+  getTabLabel(tabId.value)
+  getTab(tabId.value)
+  dialogVisible.value = true
 })
-
-const state = reactive({
-  selectedTags: [],
-});
 const handleChange = (labelId, checked) => {
   const {
     selectedTags,
@@ -100,8 +94,16 @@ const handleChange = (labelId, checked) => {
   state.selectedTags = nextSelectedTags;
 };
 
+const getTab = (tabId) => {
+  GetTab(tabId).then(res => {
+    if (res.code !== 200) {
+      Notification('标签获取失败')
+    }
+    item = reactive(res.data)
+  })
+}
+
 const getTabLabel = (tabId) => {
-  console.log("getTabLabel...........")
   GetTabLabelList(tabId).then(res => {
     if (res.code !== 200) {
       Notification('标签获取失败')

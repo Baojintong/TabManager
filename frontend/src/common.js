@@ -41,6 +41,10 @@ export const setTabData = (tabData) => {
     })
 }
 
+export const resetShowTabManageId = (tabId) => {
+    tabId.value = 0
+}
+
 export function useLabelList() {
     const store = useStore()
 
@@ -68,6 +72,19 @@ export function useTabData() {
         },
         set(val) {
             store.commit('setTabData', val)
+        }
+    })
+}
+
+export function showTabManageId() {
+    const store = useStore()
+
+    return computed({
+        get() {
+            return store.state.showTabManageId
+        },
+        set(val) {
+            store.commit('setShowTabManageId', val)
         }
     })
 }

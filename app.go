@@ -33,6 +33,14 @@ func (a *App) GetTabList() H {
 	}
 }
 
+func (a *App) GetTab(tabId uint32) H {
+	tab := handle.GetTab(tabId)
+	return M{
+		"code": 200,
+		"data": tab,
+	}
+}
+
 func (a *App) UpdateTab(item string) H {
 	log.Info("UpdateTab start.......:", item)
 	var tab define.Tab

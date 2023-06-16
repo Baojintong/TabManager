@@ -1,11 +1,13 @@
 import {createStore} from 'vuex'
+import {ref} from 'vue'
 
 // Create a new store instance.
 const store = createStore({
     state: {
         count: 100,
         labelList: [],
-        tabData: {}
+        tabData: {},
+        showTabManageId: 0
     },
     mutations: {
         setTabData(state, val) {
@@ -13,6 +15,9 @@ const store = createStore({
         },
         setLabelList(state, val) {
             state.labelList = val
+        },
+        setShowTabManageId(state, val) {
+            state.showTabManageId = val
         }
     },
     getters: {},

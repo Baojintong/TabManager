@@ -28,6 +28,11 @@ func (db *DbHandleImpl) Query(q string, args ...any) *sql.Rows {
 	}
 	return rows
 }
+
+func (db *DbHandleImpl) QueryRow(q string, args ...any) *sql.Row {
+	row := db.db.QueryRow(q, args...)
+	return row
+}
 func (db *DbHandleImpl) BatchExec(sql_ string, datas []interface{}) {
 	transaction(db.db, func(tx *sql.Tx) {
 		stmt, err := tx.Prepare(sql_)

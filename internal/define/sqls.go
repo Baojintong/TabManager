@@ -4,6 +4,7 @@ const (
 	//tab
 	CREATE_TAB_TABLE = "create table if not exists tab (id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)"
 	SELECT_TAB_LIST  = "SELECT * FROM tab order by time_stamp desc"
+	SELECT_TAB  = "SELECT * FROM tab where id=? order by time_stamp desc"
 	INSERT_TAB       = "INSERT INTO tab(title,icon_url,url,describe,save_time,time_stamp) VALUES (:title,:iconUrl,:url,:describe,:saveTime,:timeStamp)"
 	UPDATE_TAB       = "UPDATE tab SET title=?,`describe`=? WHERE id=?"
 	DELETE_TAB       = "DELETE FROM tab WHERE id=?"

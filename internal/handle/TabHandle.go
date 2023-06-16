@@ -69,6 +69,16 @@ func GetTabList() []define.Tab {
 	return tabList
 }
 
+func GetTab(tabId uint32) define.Tab {
+	row := db.QueryRow(define.SELECT_TAB, tabId)
+	var tab define.Tab
+	err := row.Scan(&tab.Id, &tab.Title, &tab.IconUrl, &tab.Url, &tab.Describe, &tab.SaveTime, &tab.Status, &tab.TimeStamp)
+	if err != nil {
+		panic(err)
+	}
+	return tab
+}
+
 func batchInsert(datas []interface{}) {
 	db.BatchExec(define.INSERT_TAB, datas)
 }
