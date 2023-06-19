@@ -1,13 +1,13 @@
 <template>
   <a-tabs v-model:activeKey="activeKey" centered>
-    <a-tab-pane key="1" tab="时间轴">
+    <a-tab-pane key="timeRoller" tab="时间轴">
       <a-row>
         <a-col :span="22" style="margin-top: 10px;">
           <TabList/>
         </a-col>
       </a-row>
     </a-tab-pane>
-    <a-tab-pane key="2" tab="我的收藏" force-render>
+    <a-tab-pane key="collect" tab="我的收藏" force-render>
       <Collect/>
     </a-tab-pane>
   </a-tabs>
@@ -29,7 +29,7 @@ import Collect from "./components/Collect.vue";
 import {SettingOutlined} from '@ant-design/icons-vue';
 import {ref} from "vue";
 
-const activeKey = ref('1')
+const activeKey = ref('timeRoller')
 
 
 </script>
