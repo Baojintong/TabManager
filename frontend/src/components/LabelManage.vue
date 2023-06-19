@@ -4,8 +4,6 @@
     <a-form
         name="basic"
         autocomplete="off"
-        @finish="onFinish"
-        @finishFailed="onFinishFailed"
     >
       <a-form-item label="标签名称" name="labelName">
         <a-input v-model:value="label.name.value" placeholder="自定义标签" show-count :maxlength="20"/>
@@ -18,11 +16,10 @@
 </template>
 <script setup>
 
-import {ref, reactive, computed} from "vue";
+import {ref} from "vue";
 import {ColorPicker} from 'vue-accessible-color-picker'
-import {SaveLabel, UpdateTab} from "../../wailsjs/go/main/App.js";
+import {SaveLabel,} from "../../wailsjs/go/main/App.js";
 import {setLabelList, useLabelList} from "../common.js"
-import {notification} from "ant-design-vue";
 import {SAVE_ERROR} from "../const.js";
 
 const dialogVisible = ref(false)
@@ -57,19 +54,7 @@ const handleOk = e => {
       setLabelList(labelList)
     }
   })
-
 }
-
-const cancel = e => {
-
-}
-
-const onFinish = values => {
-  console.log('Success:', values);
-};
-const onFinishFailed = errorInfo => {
-  console.log('Failed:', errorInfo);
-};
 
 const updateColor = e => {
   label.color.value = e.cssColor

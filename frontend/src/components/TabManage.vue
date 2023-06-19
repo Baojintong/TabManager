@@ -3,8 +3,6 @@
     <a-form
         name="basic"
         autocomplete="off"
-        @finish="onFinish"
-        @finishFailed="onFinishFailed"
     >
       <a-form-item label="标题" name="title">
         <a-input v-model:value="item.title"/>
@@ -56,12 +54,6 @@ const state = reactive({
 });
 
 
-const onFinish = values => {
-  console.log('Success:', values);
-};
-const onFinishFailed = errorInfo => {
-  console.log('Failed:', errorInfo);
-};
 const handleOk = e => {
   dialogVisible.value = false;
   item.labelIds = nextSelectedTags
@@ -76,6 +68,7 @@ const handleOk = e => {
 };
 
 const cancel = e => {
+  //更新tabData数据
   setTabData(tabData)
   resetShowTabManageId(tabId)
 };
