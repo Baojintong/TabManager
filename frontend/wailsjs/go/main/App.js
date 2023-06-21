@@ -18,8 +18,8 @@ export function GetTabLabelList(arg1) {
   return window['go']['main']['App']['GetTabLabelList'](arg1);
 }
 
-export function GetTabList() {
-  return window['go']['main']['App']['GetTabList']();
+export function GetTabList(arg1) {
+  return window['go']['main']['App']['GetTabList'](arg1);
 }
 
 export function SaveLabel(arg1) {

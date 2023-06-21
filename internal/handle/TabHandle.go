@@ -2,6 +2,7 @@ package handle
 
 import (
 	"C"
+	"database/sql"
 	"encoding/json"
 	"github.com/labstack/gommon/log"
 	_ "github.com/mattn/go-sqlite3"
@@ -54,17 +55,25 @@ func createTabTable() {
 	db.Exec(define.CREATE_TAB_LABEL_TABLE)
 }
 
-func GetTabList() []define.Tab {
-	rows := db.Query(define.SELECT_TAB_LIST)
+func GetTabList(labelId uint32) []define.Tab {
+	log.Info("labelId:", labelId)
+	var rows *sql.Rows = nil
+	if labelId == 0 {
+		rows = db.Query(define.SELECT_TAB_LIST)
+	} else {
+		rows = db.Query(define.SELECT_TAB_JOIN_LABEL, labelId)
+	}
 	var tabList []define.Tab
-	for rows.Next() {
-		var tab define.Tab
-		err := rows.Scan(&tab.Id, &tab.Title, &tab.IconUrl, &tab.Url, &tab.Describe, &tab.SaveTime, &tab.Status, &tab.TimeStamp)
-		if err != nil {
-			log.Error("queryAllTabs Scan Error:", err)
-			return nil
+	if rows != nil {
+		for rows.Next() {
+			var tab define.Tab
+			err := rows.Scan(&tab.Id, &tab.Title, &tab.IconUrl, &tab.Url, &tab.Describe, &tab.SaveTime, &tab.Status, &tab.TimeStamp)
+			if err != nil {
+				log.Error("queryAllTabs Scan Error:", err)
+				return nil
+			}
+			tabList = append(tabList, tab)
 		}
-		tabList = append(tabList, tab)
 	}
 	return tabList
 }
@@ -112,7 +121,15 @@ func cleanTabLabel(tabId uint32) {
 }
 
 func QueryTabLabel(tabId uint32) []define.TagLabel {
-	rows := db.Query(define.SELECT_TAB_LABEL, tabId)
+	return getTabLabelData(tabId, define.SELECT_TAB_LABEL)
+}
+
+func QueryLabelTab(labelId uint32) []define.TagLabel {
+	return getTabLabelData(labelId, define.SELECT_LABEL_TAB)
+}
+
+func getTabLabelData(id uint32, sql string) []define.TagLabel {
+	rows := db.Query(sql, id)
 	var tagLabelList []define.TagLabel
 	for rows.Next() {
 		var tagLabel define.TagLabel

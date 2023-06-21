@@ -1,16 +1,27 @@
 <template>
-  <a-tabs v-model:activeKey="activeKey" centered>
+  <a-tabs v-model:activeKey="tabsActiveKey" centered>
     <a-tab-pane key="timeRoller" tab="时间轴">
-      <a-row>
-        <a-col :span="22" style="margin-top: 10px;">
-          <TabList/>
-        </a-col>
-      </a-row>
     </a-tab-pane>
     <a-tab-pane key="collect" tab="我的收藏" force-render>
       <Collect/>
     </a-tab-pane>
   </a-tabs>
+  <a-collapse :ghost=true>
+    <a-collapse-panel key="labelFilter" header="标签筛选">
+      <div class="label-list">
+        <div class="label" @click="clickTag(0)" :style="{backgroundColor:'#625B5BFF',color:'#ffffff'}">重置</div>
+        <div v-for="label in labelList" class="label"
+             :style="{backgroundColor:label.color,color:'#ffffff'}" @click="clickTag(label.id)" :key="label.id">
+          {{ label.name }}
+        </div>
+      </div>
+    </a-collapse-panel>
+  </a-collapse>
+  <a-row>
+    <a-col :span="22" style="margin-top: 10px;">
+      <TabList/>
+    </a-col>
+  </a-row>
 
 
   <a-float-button-group trigger="click" :style="{ right: '36px' }">
@@ -24,12 +35,29 @@
 
 <script setup>
 import TabList from "./components/TabList.vue";
-import LabelManage from "./components/LabelManage.vue";
 import Collect from "./components/Collect.vue";
+import LabelManage from "./components/LabelManage.vue";
 import {SettingOutlined} from '@ant-design/icons-vue';
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {
+  useLabelList,
+  setLabelList,
+  useTabData,
+  setTabData
 
-const activeKey = ref('timeRoller')
+} from "./common.js"
+
+let labelList = useLabelList()
+let tabsActiveKey = ref('timeRoller')
+let tabData = useTabData()
+
+onMounted(() => {
+  setLabelList(labelList)
+})
+
+const clickTag = (id) => {
+  setTabData(tabData, id)
+}
 
 
 </script>

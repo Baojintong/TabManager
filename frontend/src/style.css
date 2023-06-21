@@ -7,15 +7,6 @@ html {
     background-color: white;
 }
 
-.createTextRow {
-    height: 40px;
-    padding: 12px;
-}
-
-.divider{
-    height: 1px;
-    background-color: #b9b9b9
-}
 .time_div{
     width: 80vw;
     height: 15px;
@@ -41,9 +32,6 @@ html {
 .text_div:active {
     background-color: #e7e5e5;
 }
-.text_div.shake {
-    transform: translateX(5px);
-}
 
 
 .text_content_div{
@@ -64,16 +52,27 @@ html {
     float: right;
     margin-right: 8px;
 }
-#components-back-top-demo-custom .ant-back-top {
-    bottom: 100px;
+
+
+.label-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: flex-start;
 }
-#components-back-top-demo-custom .ant-back-top-inner {
-    height: 40px;
-    width: 40px;
-    line-height: 40px;
+
+.label {
     border-radius: 4px;
-    background-color: #1088e9;
-    color: #fff;
-    text-align: center;
-    font-size: 20px;
+    font-size: 14px;
+    padding: 4px 8px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.label:hover {
+    transform: translateY(-5px);
+}
+
+.label:active {
+    transform: translateY(25px);
 }

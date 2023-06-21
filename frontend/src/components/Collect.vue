@@ -1,12 +1,11 @@
 <template>
-  <div>collect</div>
+  <main>
+    <div>collect</div>
+  </main>
 </template>
 
 <script setup>
-
-import {reactive, ref, onMounted} from "vue";
-
-onMounted(() => {
-  console.log("collect....")
-})
 </script>
+
+<style>
+</style>

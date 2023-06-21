@@ -25,8 +25,8 @@ func (a *App) startup(ctx context.Context) {
 	handle.SetContext(ctx)
 }
 
-func (a *App) GetTabList() H {
-	tabList := handle.GetTabList()
+func (a *App) GetTabList(labelId uint32) H {
+	tabList := handle.GetTabList(labelId)
 	return M{
 		"code": 200,
 		"data": tabList,

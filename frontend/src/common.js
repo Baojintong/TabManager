@@ -20,8 +20,8 @@ export const Notification = (msg, level = 'error') => {
     });
 }
 
-export const setTabData = (tabData) => {
-    GetTabList().then(res => {
+export const setTabData = (tabData,labelId=0) => {
+    GetTabList(labelId).then(res => {
         if (res.code !== 200) {
             Notification(QUERY_ERROR)
         }

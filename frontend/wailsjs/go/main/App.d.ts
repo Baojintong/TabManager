@@ -10,7 +10,7 @@ export function GetTab(arg1:number):Promise<main.H>;
 
 export function GetTabLabelList(arg1:number):Promise<main.H>;
 
-export function GetTabList():Promise<main.H>;
+export function GetTabList(arg1:number):Promise<main.H>;
 
 export function SaveLabel(arg1:string):Promise<main.H>;
 
