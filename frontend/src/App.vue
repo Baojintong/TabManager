@@ -1,27 +1,27 @@
 <template>
   <a-tabs v-model:activeKey="tabsActiveKey" centered>
     <a-tab-pane key="timeRoller" tab="时间轴">
+      <a-collapse :ghost=true>
+        <a-collapse-panel key="labelFilter" header="标签筛选">
+          <div class="label-list">
+            <div class="label" @click="clickTag(0)" :style="{backgroundColor:'#625B5BFF',color:'#ffffff'}">重置</div>
+            <div v-for="label in labelList" class="label"
+                 :style="{backgroundColor:label.color,color:'#ffffff'}" @click="clickTag(label.id)" :key="label.id">
+              {{ label.name }}
+            </div>
+          </div>
+        </a-collapse-panel>
+      </a-collapse>
+      <a-row>
+        <a-col :span="22" style="margin-top: 10px;">
+          <TabList/>
+        </a-col>
+      </a-row>
     </a-tab-pane>
     <a-tab-pane key="collect" tab="我的收藏" force-render>
       <Collect/>
     </a-tab-pane>
   </a-tabs>
-  <a-collapse :ghost=true>
-    <a-collapse-panel key="labelFilter" header="标签筛选">
-      <div class="label-list">
-        <div class="label" @click="clickTag(0)" :style="{backgroundColor:'#625B5BFF',color:'#ffffff'}">重置</div>
-        <div v-for="label in labelList" class="label"
-             :style="{backgroundColor:label.color,color:'#ffffff'}" @click="clickTag(label.id)" :key="label.id">
-          {{ label.name }}
-        </div>
-      </div>
-    </a-collapse-panel>
-  </a-collapse>
-  <a-row>
-    <a-col :span="22" style="margin-top: 10px;">
-      <TabList/>
-    </a-col>
-  </a-row>
 
 
   <a-float-button-group trigger="click" :style="{ right: '36px' }">
