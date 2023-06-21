@@ -56,7 +56,7 @@ const state = reactive({
 
 const handleOk = e => {
   dialogVisible.value = false;
-  item.labelIds = nextSelectedTags
+  item.labelIds = state.selectedTags
   UpdateTab(JSON.stringify(item)).then(res => {
     if (res.code !== 200) {
       Notification(UPDATE_ERROR)

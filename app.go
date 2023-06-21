@@ -42,7 +42,7 @@ func (a *App) GetTab(tabId uint32) H {
 }
 
 func (a *App) UpdateTab(item string) H {
-	log.Info("UpdateTab start.......")
+	log.Info("UpdateTab start.......:", item)
 	var tab define.Tab
 	err := json.Unmarshal([]byte(item), &tab)
 	if err != nil {
