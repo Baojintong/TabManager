@@ -16,6 +16,7 @@ var assets embed.FS
 
 func main() {
 	go startServer()
+	//go toPdf()
 	//createDataBase()
 	// Create an instance of the app structure
 	app := NewApp()
@@ -47,4 +48,7 @@ func startServer() {
 	if err != nil {
 		log.Error(" startServer Error:")
 	}
+}
+
+func toPdf() {
 }
