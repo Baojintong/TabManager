@@ -3,10 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/chromedp/cdproto/page"
-	"github.com/chromedp/chromedp"
 	"github.com/labstack/gommon/log"
-	"os"
 	"tabManager/internal/define"
 	"tabManager/internal/handle"
 )
@@ -111,33 +108,19 @@ func (a *App) GetTabLabelList(tagId uint32) H {
 	}
 }
 
-func (a *App) ToPdf() H {
-	// 创建 context
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
-	// 生成pdf
-	var buf []byte
-	if err := chromedp.Run(ctx, printToPDF(`https://colobu.com/2021/05/05/generate-pdf-for-a-web-page-by-using-chromedp/`, &buf)); err != nil {
-		log.Fatal(err)
+func (a *App) ToPDF(item string) H {
+	log.Info("ToPDF start.......")
+	var tab define.Tab
+	err := json.Unmarshal([]byte(item), &tab)
+	if err != nil {
+		return M{
+			"code": -1,
+			"msg":  "ERROR : " + err.Error(),
+		}
 	}
-	if err := os.WriteFile("colobu.pdf", buf, 0644); err != nil {
-		log.Fatal(err)
-	}
+	handle.ToPDF(tab)
 	return M{
 		"code": 200,
 		"data": "success",
-	}
-}
-func printToPDF(urlstr string, res *[]byte) chromedp.Tasks {
-	return chromedp.Tasks{
-		chromedp.Navigate(urlstr), // 浏览指定的页面
-		chromedp.ActionFunc(func(ctx context.Context) error {
-			buf, _, err := page.PrintToPDF().WithPrintBackground(false).Do(ctx) // 通过cdp执行PrintToPDF
-			if err != nil {
-				return err
-			}
-			*res = buf
-			return nil
-		}),
 	}
 }

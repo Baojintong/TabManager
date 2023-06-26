@@ -49,6 +49,3 @@ func startServer() {
 		log.Error(" startServer Error:")
 	}
 }
-
-func toPdf() {
-}

@@ -16,7 +16,7 @@ export const setLabelList = (labelList) => {
 export const Notification = (msg, level = 'error') => {
     return notification[level]({
         message: msg,
-        description: '错误',
+        description: msg,
     });
 }
 

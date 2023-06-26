@@ -18,6 +18,12 @@
               <DeleteOutlined v-on:click="deleteItem(item)"/>
             </template>
           </a-button>
+
+          <a-button type="ghost" shape="circle" size="large" class="button_print">
+            <template #icon>
+              <PrinterOutlined v-on:click="printItem(item)"/>
+            </template>
+          </a-button>
         </div>
       </div>
     </div>
@@ -25,10 +31,10 @@
 </template>
 
 <script setup>
-import {DeleteTab} from "../../wailsjs/go/main/App.js";
+import {DeleteTab,ToPDF} from "../../wailsjs/go/main/App.js";
 import {BrowserOpenURL} from "../../wailsjs/runtime";
 import {onMounted} from "vue";
-import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
+import {DeleteOutlined, EditOutlined,PrinterOutlined} from '@ant-design/icons-vue';
 import TabManage from "./TabManage.vue";
 import {Notification, useTabData, setTabData, showTabManageId} from "../common.js"
 import {DELETE_ERROR} from "../const.js";
@@ -61,6 +67,15 @@ const deleteItem = (obj) => {
 }
 const setShowId = (tab) => {
   tabManageId.value = tab.id
+}
+
+const printItem = (obj) => {
+  Notification("快照生成ing....","info")
+  ToPDF(JSON.stringify(obj)).then(res => {
+    if (res.code !== 200) {
+      Notification(DELETE_ERROR)
+    }
+  })
 }
 
 </script>

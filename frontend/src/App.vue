@@ -46,8 +46,6 @@ import {
   setTabData
 } from "./common.js"
 
-import {ToPdf} from "../wailsjs/go/main/App.js";
-
 let labelList = useLabelList()
 let tabsActiveKey = ref('timeRoller')
 let tabData = useTabData()
@@ -58,10 +56,6 @@ onMounted(() => {
 
 const clickTag = (id) => {
   setTabData(tabData, id)
-}
-
-const clickToPdf = () => {
-  ToPdf()
 }
 
 

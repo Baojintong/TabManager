@@ -14,6 +14,6 @@ export function GetTabList(arg1:number):Promise<main.H>;
 
 export function SaveLabel(arg1:string):Promise<main.H>;
 
-export function ToPdf():Promise<main.H>;
+export function ToPDF(arg1:string):Promise<main.H>;
 
 export function UpdateTab(arg1:string):Promise<main.H>;
