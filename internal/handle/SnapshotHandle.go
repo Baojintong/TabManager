@@ -7,8 +7,26 @@ import (
 	"log"
 	"os"
 	"tabManager/internal/define"
+	"time"
 )
 
+func CreateToPDFTask(tab define.Tab) {
+
+	now := time.Now()
+	nowDate := now.Format("2006-01-02")
+	timestamp := time.Now().Unix()
+
+	var interfaces []interface{}
+	task := define.Task{}
+	task.TargetId = tab.Id
+	task.CreateTime = nowDate
+	task.TimeStamp = timestamp
+	task.Name = "快照创建"
+	task.TargetType = "tab_to_pdf"
+	interfaces = append(interfaces, task)
+
+	db.BatchExec(define.INSERT_TASK, interfaces)
+}
 func ToPDF(tab define.Tab) {
 	// 创建 context
 	ctx, cancel := chromedp.NewContext(context.Background())

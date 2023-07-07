@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import {DeleteTab,ToPDF} from "../../wailsjs/go/main/App.js";
+import {DeleteTab,CreateToPDFTask} from "../../wailsjs/go/main/App.js";
 import {BrowserOpenURL} from "../../wailsjs/runtime";
 import {onMounted} from "vue";
 import {DeleteOutlined, EditOutlined,PrinterOutlined} from '@ant-design/icons-vue';
@@ -70,8 +70,8 @@ const setShowId = (tab) => {
 }
 
 const printItem = (obj) => {
-  Notification("快照生成ing....","info")
-  ToPDF(JSON.stringify(obj)).then(res => {
+  Notification("创建快照任务....","info")
+  CreateToPDFTask(JSON.stringify(obj)).then(res => {
     if (res.code !== 200) {
       Notification(DELETE_ERROR)
     }

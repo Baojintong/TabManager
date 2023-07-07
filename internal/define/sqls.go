@@ -21,4 +21,6 @@ const (
 	CREATE_LABEL_TABLE = "create table if not exists label (id integer not null constraint label_pk primary key autoincrement, name TEXT default '自定义标签' not null, color TEXT not null )"
 	INSERT_LABEL       = "INSERT INTO label(name,color) VALUES (?,?)"
 	SELECT_LABEL       = "SELECT * FROM label"
+
+	INSERT_TASK = "INSERT INTO task (name, create_time, time_stamp, target_id,target_type) VALUES(:name,:createTime,:timeStamp,:targetId,:targetType)"
 )
