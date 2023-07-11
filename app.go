@@ -108,23 +108,6 @@ func (a *App) GetTabLabelList(tagId uint32) H {
 	}
 }
 
-func (a *App) ToPDF(item string) H {
-	log.Info("ToPDF start.......")
-	var tab define.Tab
-	err := json.Unmarshal([]byte(item), &tab)
-	if err != nil {
-		return M{
-			"code": -1,
-			"msg":  "ERROR : " + err.Error(),
-		}
-	}
-	handle.ToPDF(tab)
-	return M{
-		"code": 200,
-		"data": "success",
-	}
-}
-
 func (a *App) CreateToPDFTask(item string) H {
 	log.Info("CreateToPDFTask start.......")
 	var tab define.Tab

@@ -16,6 +16,7 @@ var assets embed.FS
 
 func main() {
 	go startServer()
+	go handle.ToPDFConsumer()
 	//go toPdf()
 	//createDataBase()
 	// Create an instance of the app structure

@@ -6,9 +6,12 @@ import (
 	"github.com/chromedp/chromedp"
 	"log"
 	"os"
+	"strconv"
 	"tabManager/internal/define"
 	"time"
 )
+
+var channel = make(chan define.Tab, 64)
 
 func CreateToPDFTask(tab define.Tab) {
 
@@ -26,18 +29,25 @@ func CreateToPDFTask(tab define.Tab) {
 	interfaces = append(interfaces, task)
 
 	db.BatchExec(define.INSERT_TASK, interfaces)
+
+	channel <- tab
 }
-func ToPDF(tab define.Tab) {
-	// 创建 context
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
-	// 生成pdf
-	var buf []byte
-	if err := chromedp.Run(ctx, printToPDF(tab.Url, &buf)); err != nil {
-		log.Fatal(err)
-	}
-	if err := os.WriteFile("aa.pdf", buf, 0644); err != nil {
-		log.Fatal(err)
+func ToPDFConsumer() {
+	log.Println("启动ToPDFConsumer.....")
+	for tab := range channel {
+		log.Println("触发ToPDFConsumer.....")
+		// 创建 context
+		ctx, cancel := chromedp.NewContext(context.Background())
+		defer cancel()
+		// 生成pdf
+		var buf []byte
+		if err := chromedp.Run(ctx, printToPDF(tab.Url, &buf)); err != nil {
+			log.Fatal(err)
+		}
+		name := strconv.FormatUint(uint64(tab.Id), 10) + ".pdf"
+		if err := os.WriteFile(name, buf, 0644); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 

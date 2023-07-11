@@ -30,10 +30,6 @@ export function SaveLabel(arg1) {
   return window['go']['main']['App']['SaveLabel'](arg1);
 }
 
-export function ToPDF(arg1) {
-  return window['go']['main']['App']['ToPDF'](arg1);
-}
-
 export function UpdateTab(arg1) {
   return window['go']['main']['App']['UpdateTab'](arg1);
 }
