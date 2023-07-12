@@ -6,18 +6,17 @@ import (
 	"github.com/chromedp/chromedp"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"tabManager/internal/define"
-	"time"
+	"tabManager/internal/utils"
 )
 
 var channel = make(chan define.Tab, 64)
 
 func CreateToPDFTask(tab define.Tab) {
 
-	now := time.Now()
-	nowDate := now.Format("2006-01-02")
-	timestamp := time.Now().Unix()
+	timestamp,nowDate := utils.GetCurrentTime()
 
 	var interfaces []interface{}
 	task := define.Task{}
@@ -45,7 +44,17 @@ func ToPDFConsumer() {
 			log.Fatal(err)
 		}
 		name := strconv.FormatUint(uint64(tab.Id), 10) + ".pdf"
-		if err := os.WriteFile(name, buf, 0644); err != nil {
+		dirPath := "pdfs/"
+		filePath := filepath.Join(dirPath, name)
+
+		if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+			err := os.MkdirAll(dirPath, 0755)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		if err := os.WriteFile(filePath, buf, 0644); err != nil {
 			log.Fatal(err)
 		}
 	}

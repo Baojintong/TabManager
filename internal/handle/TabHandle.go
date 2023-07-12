@@ -10,7 +10,7 @@ import (
 	"io"
 	"net/http"
 	"tabManager/internal/define"
-	"time"
+	"tabManager/internal/utils"
 )
 
 func TabHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,9 +26,7 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 		log.Error(" tabsHandler Error:", err)
 		return
 	}
-	now := time.Now()
-	nowDate := now.Format("2006-01-02")
-	timestamp := time.Now().Unix()
+	timestamp, nowDate := utils.GetCurrentTime()
 	var interfaces []interface{}
 	for i, n := 0, len(Tab); i < n; i++ {
 		Tab[i].Describe = Tab[i].Title

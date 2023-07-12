@@ -29,6 +29,7 @@
       <SettingOutlined/>
     </template>
     <LabelManage/>
+    <SettingManage/>
   </a-float-button-group>
   <a-back-top :style="{ right: '36px' }"/>
 </template>
@@ -37,6 +38,7 @@
 import TabList from "./components/TabList.vue";
 import Collect from "./components/Collect.vue";
 import LabelManage from "./components/LabelManage.vue";
+import SettingManage from "./components/SettingManage.vue";
 import {SettingOutlined} from '@ant-design/icons-vue';
 import {onMounted, ref} from "vue";
 import {

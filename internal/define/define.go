@@ -33,3 +33,9 @@ type Task struct {
 	TargetId   uint32 `json:"targetId" db:"targetId"`
 	TargetType string `json:"targetType" db:"targetType"`
 }
+
+type Config struct {
+	Id    uint32 `json:"id"`
+	Key   string `json:"key" db:"key"`
+	Value string `json:"value" db:"value"`
+}
