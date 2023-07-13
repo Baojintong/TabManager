@@ -48,7 +48,7 @@ func ToPDFConsumer() {
 		filePath := filepath.Join(dirPath, name)
 
 		if _, err := os.Stat(dirPath); os.IsNotExist(err) {
-			err := os.MkdirAll(dirPath, 0755)
+			err := os.MkdirAll(dirPath, 0777)
 			if err != nil {
 				log.Fatal(err)
 			}

@@ -44,13 +44,13 @@ func TabHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveTab(datas []interface{}) {
-	createTabTable()
+	//CreateTabTable()
 	batchInsert(datas)
 }
 
-func createTabTable() {
-	db.Exec(define.CREATE_TAB_TABLE)
-	db.Exec(define.CREATE_TAB_LABEL_TABLE)
+func CreateTabTable() {
+	db.ExecNoTran(define.CREATE_TAB_TABLE)
+	db.ExecNoTran(define.CREATE_TAB_LABEL_TABLE)
 }
 
 func GetTabList(labelId uint32) []define.Tab {

@@ -2,7 +2,7 @@ package define
 
 const (
 	//tab
-	CREATE_TAB_TABLE      = "create table if not exists tab (id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null)"
+	CREATE_TAB_TABLE      = "create table if not exists tab (id integer not null constraint tabs_pk primary key autoincrement,title TEXT,icon_url TEXT,url TEXT,describe TEXT,save_time TEXT not null,status integer default 0 not null,time_stamp integer default 0 not null)"
 	SELECT_TAB_LIST       = "SELECT * FROM tab order by time_stamp desc"
 	SELECT_TAB            = "SELECT * FROM tab where id=? order by time_stamp desc"
 	SELECT_TAB_JOIN_LABEL = "select tab.* from tab left join tab_label tl on tab.id = tl.tab_id where tl.label_id=? order by tab.time_stamp desc"
@@ -22,5 +22,13 @@ const (
 	INSERT_LABEL       = "INSERT INTO label(name,color) VALUES (?,?)"
 	SELECT_LABEL       = "SELECT * FROM label"
 
+	//task
+	CREATE_TASK_TABLE="create table if not exists task(id integer not null constraint task_pk primary key autoincrement, name TEXT, create_time TEXT not null, status integer default 0 not null, time_stamp integer default 0 not null ,target_id INTEGER DEFAULT (0), target_type TEXT)"
 	INSERT_TASK = "INSERT INTO task (name, create_time, time_stamp, target_id,target_type) VALUES(:name,:createTime,:timeStamp,:targetId,:targetType)"
+
+
+	//config
+	CREATE_CONFIG_TABLE="create table if not exists config(id integer not null constraint config_pk primary key autoincrement, key TEXT default '' not null,value TEXT default '' not null)"
+
+
 )

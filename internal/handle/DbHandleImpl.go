@@ -3,6 +3,7 @@ package handle
 import (
 	"database/sql"
 	"github.com/labstack/gommon/log"
+	"os"
 	"reflect"
 	"tabManager/internal/define"
 )
@@ -14,7 +15,21 @@ type Param struct {
 	Value any
 }
 
+func (db *DbHandleImpl) Init() {
+	if _, err := os.Stat(define.DB_ALL); os.IsNotExist(err) {
+		if err := os.MkdirAll(define.DB_PATH, 0777); err != nil {
+			panic(err)
+		}
+		if _, err := os.Create(define.DB_ALL); err != nil {
+			panic(err)
+		}
+	}
+}
 func (db *DbHandleImpl) Connect() {
+	if _, err := os.Stat(define.DB_PATH); os.IsNotExist(err) {
+		log.Error("db未初始化")
+		panic(err)
+	}
 	var err error
 	db.db, err = sql.Open("sqlite3", define.DATA_SOURCE_NAME)
 	if err != nil {
@@ -76,6 +91,13 @@ func (db *DbHandleImpl) Exec(sql_ string, args ...any) {
 			panic(err)
 		}
 	})
+}
+
+func (db *DbHandleImpl) ExecNoTran(sql_ string) {
+	var _, err = db.db.Exec(sql_)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func execStmt(stmt *sql.Stmt, args ...any) sql.Result {

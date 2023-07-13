@@ -6,7 +6,7 @@ import (
 )
 
 func SaveLabel(label define.Label) {
-	createLabelTable()
+	//createLabelTable()
 	saveLabel(label)
 }
 
@@ -14,8 +14,8 @@ func saveLabel(label define.Label) {
 	db.Exec(define.INSERT_LABEL, label.Name, label.Color)
 }
 
-func createLabelTable() {
-	db.Exec(define.CREATE_LABEL_TABLE)
+func CreateLabelTable() {
+	db.ExecNoTran(define.CREATE_LABEL_TABLE)
 }
 
 func GetLabelList() []define.Label {

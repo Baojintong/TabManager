@@ -1,9 +1,13 @@
 package define
 
 const (
-	DATA_SOURCE_NAME = "file:" + DB_PATH + "?mode=rwc"
-	DB_PATH          = "./db/tabs.db"
-	LISTEN_URL       = "localhost:12315"
+	DATA_SOURCE_NAME = "file:" + DB_ALL + "?mode=rwc"
 
-	DATE_FORMAT="2006-01-02 15:04:05"
+	DB_ALL = DB_PATH + DB_FILE
+
+	DB_FILE    = "tabs.db"
+	DB_PATH    = "./db/"
+	LISTEN_URL = "localhost:12315"
+
+	DATE_FORMAT = "2006-01-02 15:04:05"
 )
