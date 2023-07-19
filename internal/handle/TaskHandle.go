@@ -2,6 +2,6 @@ package handle
 
 import "tabManager/internal/define"
 
-func CreateTasktable() {
+func CreateTaskTable() {
 	db.ExecNoTran(define.CREATE_TASK_TABLE)
 }

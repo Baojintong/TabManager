@@ -14,7 +14,8 @@ func init() {
 	log.Info("table start init.........")
 	CreateLabelTable()
 	CreateTabTable()
-	CreateTasktable()
+	CreateTaskTable()
+	CreateConfigTable()
 	log.Info("table end init.........")
 }
 

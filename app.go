@@ -124,3 +124,11 @@ func (a *App) CreateToPDFTask(item string) H {
 		"data": "success",
 	}
 }
+
+func (a *App) GetConfigList() H {
+	configList := handle.GetConfigList()
+	return M{
+		"code": 200,
+		"data": configList,
+	}
+}

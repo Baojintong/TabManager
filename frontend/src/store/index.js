@@ -4,7 +4,6 @@ import {ref} from 'vue'
 // Create a new store instance.
 const store = createStore({
     state: {
-        count: 100,
         labelList: [],
         tabData: {},
         showTabManageId: 0

@@ -30,5 +30,5 @@ const (
 	//config
 	CREATE_CONFIG_TABLE="create table if not exists config(id integer not null constraint config_pk primary key autoincrement, key TEXT default '' not null,value TEXT default '' not null)"
 
-
+	SELECT_CONFIG       = "SELECT * FROM config"
 )
