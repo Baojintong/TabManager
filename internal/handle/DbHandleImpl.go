@@ -2,6 +2,7 @@ package handle
 
 import (
 	"database/sql"
+	"encoding/json"
 	"github.com/labstack/gommon/log"
 	"os"
 	"reflect"
@@ -101,6 +102,8 @@ func (db *DbHandleImpl) ExecNoTran(sql_ string) {
 }
 
 func execStmt(stmt *sql.Stmt, args ...any) sql.Result {
+	jsonBytes, _ := json.Marshal(args)
+	log.Info("execStmt:",string(jsonBytes))
 	result, err := stmt.Exec(args...)
 	if err != nil {
 		return nil

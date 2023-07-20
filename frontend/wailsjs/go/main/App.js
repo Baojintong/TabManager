@@ -10,6 +10,10 @@ export function DeleteTab(arg1) {
   return window['go']['main']['App']['DeleteTab'](arg1);
 }
 
+export function GetConfigList() {
+  return window['go']['main']['App']['GetConfigList']();
+}
+
 export function GetLabelList() {
   return window['go']['main']['App']['GetLabelList']();
 }
@@ -24,6 +28,10 @@ export function GetTabLabelList(arg1) {
 
 export function GetTabList(arg1) {
   return window['go']['main']['App']['GetTabList'](arg1);
+}
+
+export function SaveConfig(arg1) {
+  return window['go']['main']['App']['SaveConfig'](arg1);
 }
 
 export function SaveLabel(arg1) {

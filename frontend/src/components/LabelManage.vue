@@ -1,6 +1,6 @@
 <template>
   <a-float-button tooltip="个人标签编辑" @click="dialogVisible = true"/>
-  <a-modal v-model:open="dialogVisible" title="标签编辑" @ok="handleOk" @cancel="cancel">
+  <a-modal v-model:open="dialogVisible" title="标签编辑" @ok="handleOk">
     <a-form
         name="basic"
         autocomplete="off"

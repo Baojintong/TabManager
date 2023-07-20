@@ -35,7 +35,8 @@ type Task struct {
 }
 
 type Config struct {
-	Id    uint32 `json:"id"`
-	Key   string `json:"key" db:"key"`
-	Value string `json:"value" db:"value"`
+	Id       uint32 `json:"id"`
+	Key      string `json:"key" db:"key"`
+	Value    string `json:"value" db:"value"`
+	Describe string `json:"describe" db:"describe"`
 }

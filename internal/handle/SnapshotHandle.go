@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
-	"log"
+	"github.com/labstack/gommon/log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -32,9 +32,9 @@ func CreateToPDFTask(tab define.Tab) {
 	channel <- tab
 }
 func ToPDFConsumer() {
-	log.Println("启动ToPDFConsumer.....")
+	log.Info("启动ToPDFConsumer.....")
 	for tab := range channel {
-		log.Println("触发ToPDFConsumer.....")
+		log.Info("触发ToPDFConsumer.....")
 		// 创建 context
 		ctx, cancel := chromedp.NewContext(context.Background())
 		defer cancel()

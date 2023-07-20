@@ -23,12 +23,15 @@ const (
 	SELECT_LABEL       = "SELECT * FROM label"
 
 	//task
-	CREATE_TASK_TABLE="create table if not exists task(id integer not null constraint task_pk primary key autoincrement, name TEXT, create_time TEXT not null, status integer default 0 not null, time_stamp integer default 0 not null ,target_id INTEGER DEFAULT (0), target_type TEXT)"
-	INSERT_TASK = "INSERT INTO task (name, create_time, time_stamp, target_id,target_type) VALUES(:name,:createTime,:timeStamp,:targetId,:targetType)"
-
+	CREATE_TASK_TABLE = "create table if not exists task(id integer not null constraint task_pk primary key autoincrement, name TEXT, create_time TEXT not null, status integer default 0 not null, time_stamp integer default 0 not null ,target_id INTEGER DEFAULT (0), target_type TEXT)"
+	INSERT_TASK       = "INSERT INTO task (name, create_time, time_stamp, target_id,target_type) VALUES(:name,:createTime,:timeStamp,:targetId,:targetType)"
 
 	//config
-	CREATE_CONFIG_TABLE="create table if not exists config(id integer not null constraint config_pk primary key autoincrement, key TEXT default '' not null,value TEXT default '' not null)"
+	CREATE_CONFIG_TABLE = "create table if not exists config(id integer not null constraint config_pk primary key autoincrement, key TEXT default '' not null,value TEXT default '' not null,describe TEXT)"
 
-	SELECT_CONFIG       = "SELECT * FROM config"
+	SELECT_CONFIG = "SELECT * FROM config"
+
+	UPDATE_CONFIG = "UPDATE config SET value=:value WHERE id=:id"
+
+	INSERT_CONFIG = "INSERT INTO config(key,value,describe) VALUES (:key,:value,:describe)"
 )

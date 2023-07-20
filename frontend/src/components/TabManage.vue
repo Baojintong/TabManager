@@ -48,7 +48,7 @@ let nextSelectedTags = []
 let labelList = useLabelList()
 let tabData = useTabData()
 let labelIds = []
-const tabId = showTabManageId()
+const tabManageId = showTabManageId()
 const state = reactive({
   selectedTags: [],
 });
@@ -64,19 +64,18 @@ const handleOk = e => {
       setTabData(tabData)
     }
   })
-  resetShowTabManageId(tabId)
+  resetShowTabManageId(tabManageId)
 };
 
 const cancel = e => {
   //更新tabData数据
   setTabData(tabData)
-  resetShowTabManageId(tabId)
+  resetShowTabManageId(tabManageId)
 };
 
 onMounted(() => {
-  setLabelList(labelList)
-  getTabLabel(tabId.value)
-  getTab(tabId.value)
+  getTabLabel(tabManageId.value)
+  getTab(tabManageId.value)
   dialogVisible.value = true
 })
 const handleChange = (labelId, checked) => {
@@ -87,8 +86,8 @@ const handleChange = (labelId, checked) => {
   state.selectedTags = nextSelectedTags;
 };
 
-const getTab = (tabId) => {
-  GetTab(tabId).then(res => {
+const getTab = (tabManageId) => {
+  GetTab(tabManageId).then(res => {
     if (res.code !== 200) {
       Notification('标签获取失败')
     }
@@ -96,8 +95,8 @@ const getTab = (tabId) => {
   })
 }
 
-const getTabLabel = (tabId) => {
-  GetTabLabelList(tabId).then(res => {
+const getTabLabel = (tabManageId) => {
+  GetTabLabelList(tabManageId).then(res => {
     if (res.code !== 200) {
       Notification('标签获取失败')
     }

@@ -132,3 +132,19 @@ func (a *App) GetConfigList() H {
 		"data": configList,
 	}
 }
+
+func (a *App) SaveConfig(configs string) H {
+	var configList []define.Config
+	err := json.Unmarshal([]byte(configs), &configList)
+	if err != nil {
+		return M{
+			"code": -1,
+			"msg":  "ERROR : " + err.Error(),
+		}
+	}
+	handle.SaveConfig(configList)
+	return M{
+		"code": 200,
+		"data": "",
+	}
+}

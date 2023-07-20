@@ -6,6 +6,8 @@ export function CreateToPDFTask(arg1:string):Promise<main.H>;
 
 export function DeleteTab(arg1:string):Promise<main.H>;
 
+export function GetConfigList():Promise<main.H>;
+
 export function GetLabelList():Promise<main.H>;
 
 export function GetTab(arg1:number):Promise<main.H>;
@@ -13,6 +15,8 @@ export function GetTab(arg1:number):Promise<main.H>;
 export function GetTabLabelList(arg1:number):Promise<main.H>;
 
 export function GetTabList(arg1:number):Promise<main.H>;
+
+export function SaveConfig(arg1:string):Promise<main.H>;
 
 export function SaveLabel(arg1:string):Promise<main.H>;
 

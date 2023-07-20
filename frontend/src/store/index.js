@@ -6,7 +6,8 @@ const store = createStore({
     state: {
         labelList: [],
         tabData: {},
-        showTabManageId: 0
+        showTabManageId: 0,
+        configList:[]
     },
     mutations: {
         setTabData(state, val) {
@@ -17,6 +18,9 @@ const store = createStore({
         },
         setShowTabManageId(state, val) {
             state.showTabManageId = val
+        },
+        setConfigList(state, val) {
+            state.configList = val
         }
     },
     getters: {},

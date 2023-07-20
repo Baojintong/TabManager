@@ -1,23 +1,25 @@
-import {GetLabelList, GetTabList} from "../wailsjs/go/main/App.js";
+import {GetLabelList, GetTabList,GetConfigList} from "../wailsjs/go/main/App.js";
 import {notification} from "ant-design-vue";
 import {useStore} from 'vuex'
 import {computed} from 'vue'
 import {QUERY_ERROR} from "./const.js";
 
-export const setLabelList = (labelList) => {
-    GetLabelList().then(res => {
-        if (res.code !== 200) {
-            Notification('标签获取失败')
-        }
-        labelList.value = res.data
-    })
-}
+
 
 export const Notification = (msg, level = 'error') => {
     return notification[level]({
         message: msg,
         description: msg,
     });
+}
+
+export const setLabelList = (labelList) => {
+    GetLabelList().then(res => {
+        if (res.code !== 200) {
+            Notification(QUERY_ERROR)
+        }
+        labelList.value = res.data
+    })
 }
 
 export const setTabData = (tabData,labelId=0) => {
@@ -45,6 +47,20 @@ export const resetShowTabManageId = (tabId) => {
     tabId.value = 0
 }
 
+export const getConfigList = (configList) => {
+    GetConfigList().then(res => {
+        if (res.code !== 200) {
+            Notification(QUERY_ERROR)
+        }
+        configList.value = res.data
+        console.log("configList.value:",JSON.stringify(configList.value))
+    })
+}
+
+/**
+ * 快捷生成store
+ * @returns {(*&{checked: boolean})[]|WritableComputedRef<*>}
+ */
 export function useLabelList() {
     const store = useStore()
 
