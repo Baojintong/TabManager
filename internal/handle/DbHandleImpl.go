@@ -63,7 +63,7 @@ func (db *DbHandleImpl) BatchExec(sql_ string, datas []interface{}) {
 			for i := 0; i < t.NumField(); i++ {
 				field := t.Field(i)
 				name := field.Name
-				tag := field.Tag.Get("db")
+				tag := field.Tag.Get("input")
 				fieldValue := value.FieldByName(name)
 				fieldValues := fieldValue.Interface()
 				if len(tag) != 0 {
@@ -106,8 +106,10 @@ func execStmt(stmt *sql.Stmt, args ...any) sql.Result {
 	log.Info("execStmt:",string(jsonBytes))
 	result, err := stmt.Exec(args...)
 	if err != nil {
-		return nil
+		panic(err)
 	}
+	count, _ := result.RowsAffected()
+	log.Info("exec count:", count)
 	return result
 }
 

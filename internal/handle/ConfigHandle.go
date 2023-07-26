@@ -32,7 +32,7 @@ func SaveConfig(configs []define.Config){
 		config:= define.Config{}
 		config.Id = configObj.Id
 		config.Key = configObj.Key
-		config.Value = "111111111"//configObj.Value
+		config.Value = configObj.Value
 		config.Describe = configObj.Describe
 		interfaces = append(interfaces, config)
 	}
