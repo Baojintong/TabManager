@@ -44,7 +44,7 @@ func ToPDFConsumer() {
 			log.Fatal(err)
 		}
 		name := strconv.FormatUint(uint64(tab.Id), 10) + ".pdf"
-		dirPath := "pdfs/"
+		dirPath := GetConfigValueByKey("path")+"/pdfs/"
 		filePath := filepath.Join(dirPath, name)
 
 		if _, err := os.Stat(dirPath); os.IsNotExist(err) {

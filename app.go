@@ -142,7 +142,7 @@ func (a *App) SaveConfig(configs string) H {
 			"msg":  "ERROR : " + err.Error(),
 		}
 	}
-	handle.SaveConfig(configList)
+	handle.UpdateConfig(configList)
 	return M{
 		"code": 200,
 		"data": "",

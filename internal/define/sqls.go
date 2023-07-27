@@ -31,6 +31,8 @@ const (
 
 	SELECT_CONFIG = "SELECT * FROM config"
 
+	SELECT_CONFIG_BY_KEY = "SELECT * FROM config where key=?"
+
 	UPDATE_CONFIG = "UPDATE config SET value=:value,describe=:describe,key=:key WHERE id=:id"
 
 	INSERT_CONFIG = "INSERT INTO config(key,value,describe) VALUES (:key,:value,:describe)"

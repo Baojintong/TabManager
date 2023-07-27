@@ -25,7 +25,28 @@ func GetConfigList() []define.Config{
 	return configList
 }
 
+func InitConfig(){
+	var config define.Config
+	config.Key="path"
+	config.Value="file"
+	config.Describe="文件路径"
+	SaveConfig([]define.Config{config})
+}
+
 func SaveConfig(configs []define.Config){
+	var interfaces []interface{}
+	for i, n := 0, len(configs); i < n; i++ {
+		configObj := configs[i]
+		config:= define.Config{}
+		config.Key = configObj.Key
+		config.Value = configObj.Value
+		config.Describe = configObj.Describe
+		interfaces = append(interfaces, config)
+	}
+	db.BatchExec(define.INSERT_CONFIG, interfaces)
+}
+
+func UpdateConfig(configs []define.Config){
 	var interfaces []interface{}
 	for i, n := 0, len(configs); i < n; i++ {
 		configObj := configs[i]
@@ -37,4 +58,24 @@ func SaveConfig(configs []define.Config){
 		interfaces = append(interfaces, config)
 	}
 	db.BatchExec(define.UPDATE_CONFIG, interfaces)
+}
+
+func GetConfigByKey(key string) define.Config{
+	row := db.QueryRow(define.SELECT_CONFIG_BY_KEY, key)
+	var config define.Config
+	err := row.Scan(&config.Id, &config.Key, &config.Value, &config.Describe)
+	if err != nil {
+		panic(err)
+	}
+	return config
+}
+
+func GetConfigValueByKey(key string) string{
+	row := db.QueryRow(define.SELECT_CONFIG_BY_KEY, key)
+	var config define.Config
+	err := row.Scan(&config.Id, &config.Key, &config.Value, &config.Describe)
+	if err != nil {
+		panic(err)
+	}
+	return config.Value
 }

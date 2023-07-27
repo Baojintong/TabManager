@@ -17,6 +17,10 @@ func init() {
 	CreateTaskTable()
 	CreateConfigTable()
 	log.Info("table end init.........")
+
+	log.Info("data start init.........")
+	InitConfig()
+	log.Info("data end init.........")
 }
 
 func SetContext(ctx context.Context) {
