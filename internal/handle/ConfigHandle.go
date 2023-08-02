@@ -1,6 +1,7 @@
 package handle
 
 import (
+	"database/sql"
 	"github.com/labstack/gommon/log"
 	"tabManager/internal/define"
 )
@@ -30,7 +31,10 @@ func InitConfig(){
 	config.Key="path"
 	config.Value="file"
 	config.Describe="文件路径"
-	SaveConfig([]define.Config{config})
+	path :=GetConfigByKey("path")
+	if path.Id == 0 {
+		SaveConfig([]define.Config{config})
+	}
 }
 
 func SaveConfig(configs []define.Config){
@@ -64,6 +68,9 @@ func GetConfigByKey(key string) define.Config{
 	row := db.QueryRow(define.SELECT_CONFIG_BY_KEY, key)
 	var config define.Config
 	err := row.Scan(&config.Id, &config.Key, &config.Value, &config.Describe)
+	if err == sql.ErrNoRows {
+		return config
+	}
 	if err != nil {
 		panic(err)
 	}
@@ -74,6 +81,9 @@ func GetConfigValueByKey(key string) string{
 	row := db.QueryRow(define.SELECT_CONFIG_BY_KEY, key)
 	var config define.Config
 	err := row.Scan(&config.Id, &config.Key, &config.Value, &config.Describe)
+	if err == sql.ErrNoRows {
+		return ""
+	}
 	if err != nil {
 		panic(err)
 	}

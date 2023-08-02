@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/gommon/log"
 	"os"
 	"reflect"
+	"regexp"
 	"tabManager/internal/define"
 )
 
@@ -50,30 +51,64 @@ func (db *DbHandleImpl) QueryRow(q string, args ...any) *sql.Row {
 	return row
 }
 func (db *DbHandleImpl) BatchExec(sql_ string, datas []interface{}) {
+	placeholderNames := GetPlaceholderNames(sql_)
 	transaction(db.db, func(tx *sql.Tx) {
 		stmt, err := tx.Prepare(sql_)
-		if err != nil {
+		if err !=  nil {
 			panic(err)
 		}
-		log.Info("sql_:", sql_)
-		for _, v := range datas {
-			value := reflect.ValueOf(v)
-			t := value.Type()
-			var nameList []interface{}
-			for i := 0; i < t.NumField(); i++ {
-				field := t.Field(i)
-				name := field.Name
-				tag := field.Tag.Get("input")
-				fieldValue := value.FieldByName(name)
-				fieldValues := fieldValue.Interface()
-				if len(tag) != 0 {
-					var named sql.NamedArg = sql.Named(tag, fieldValues)
-					nameList = append(nameList, named)
-				}
-			}
-			execStmt(stmt, nameList...)
+		var nameList []sql.NamedArg
+		for _, data := range datas {
+			nameList = BuildNameListByNames(placeholderNames,data)
 		}
+
+		var args []interface{}
+		for _, namedArg := range nameList {
+			args = append(args, namedArg)
+		}
+		execStmt(stmt, args...)
 	})
+}
+
+func GetPlaceholderNames(sql string) []string {
+	re := regexp.MustCompile(`:(\w+)`)
+	names := re.FindAllStringSubmatch(sql, -1)
+	var result []string
+	for _, name := range names {
+		result = append(result, name[1])
+	}
+	return result
+}
+
+func BuildNameListByNames(names []string, data interface{}) []sql.NamedArg {
+	namedArgs := make([]sql.NamedArg, 0)
+
+	// 使用 reflect 获取数据结构
+	params := getDbFields(data)
+	for _, name := range names {
+		field :=params[name]
+		log.Info("name:", name, " value:", field)
+		namedArgs = append(namedArgs, sql.Named(name, field))
+	}
+
+	return namedArgs
+}
+
+func getDbFields(data interface{}) map[string]interface{} {
+	params := make(map[string]interface{})
+	v := reflect.ValueOf(data)
+	t := v.Type()
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		tag := field.Tag.Get("db")
+
+		if tag != "" {
+			fieldValue := v.Field(i).Interface()
+			params[tag] = fieldValue
+		}
+	}
+
+	return params
 }
 
 func (db *DbHandleImpl) Exec(sql_ string, args ...any) {
@@ -86,7 +121,6 @@ func (db *DbHandleImpl) Exec(sql_ string, args ...any) {
 		count, _ := result.RowsAffected()
 		log.Info("sql_:", sql_)
 		log.Info("exec count:", count)
-
 		err = stmt.Close()
 		if err != nil {
 			panic(err)
@@ -103,7 +137,7 @@ func (db *DbHandleImpl) ExecNoTran(sql_ string) {
 
 func execStmt(stmt *sql.Stmt, args ...any) sql.Result {
 	jsonBytes, _ := json.Marshal(args)
-	log.Info("execStmt:",string(jsonBytes))
+	log.Info("execStmt:", string(jsonBytes))
 	result, err := stmt.Exec(args...)
 	if err != nil {
 		panic(err)
