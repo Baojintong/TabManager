@@ -54,19 +54,17 @@ func (db *DbHandleImpl) BatchExec(sql_ string, datas []interface{}) {
 	placeholderNames := GetPlaceholderNames(sql_)
 	transaction(db.db, func(tx *sql.Tx) {
 		stmt, err := tx.Prepare(sql_)
-		if err !=  nil {
+		if err != nil {
 			panic(err)
 		}
-		var nameList []sql.NamedArg
 		for _, data := range datas {
-			nameList = BuildNameListByNames(placeholderNames,data)
+			nameList := BuildNameListByNames(placeholderNames, data)
+			var args []interface{}
+			for _, namedArg := range nameList {
+				args = append(args, namedArg)
+			}
+			execStmt(stmt, args...)
 		}
-
-		var args []interface{}
-		for _, namedArg := range nameList {
-			args = append(args, namedArg)
-		}
-		execStmt(stmt, args...)
 	})
 }
 
@@ -86,7 +84,7 @@ func BuildNameListByNames(names []string, data interface{}) []sql.NamedArg {
 	// 使用 reflect 获取数据结构
 	params := getDbFields(data)
 	for _, name := range names {
-		field :=params[name]
+		field := params[name]
 		log.Info("name:", name, " value:", field)
 		namedArgs = append(namedArgs, sql.Named(name, field))
 	}
@@ -117,10 +115,7 @@ func (db *DbHandleImpl) Exec(sql_ string, args ...any) {
 		if err != nil {
 			panic(err)
 		}
-		result := execStmt(stmt, args...)
-		count, _ := result.RowsAffected()
-		log.Info("sql_:", sql_)
-		log.Info("exec count:", count)
+		execStmt(stmt, args...)
 		err = stmt.Close()
 		if err != nil {
 			panic(err)
@@ -143,6 +138,7 @@ func execStmt(stmt *sql.Stmt, args ...any) sql.Result {
 		panic(err)
 	}
 	count, _ := result.RowsAffected()
+	log.Info("args num:", len(args))
 	log.Info("exec count:", count)
 	return result
 }

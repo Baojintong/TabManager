@@ -18,9 +18,6 @@
         </a-col>
       </a-row>
     </a-tab-pane>
-    <a-tab-pane key="collect" tab="我的快照" force-render>
-      <Collect/>
-    </a-tab-pane>
   </a-tabs>
 
 
