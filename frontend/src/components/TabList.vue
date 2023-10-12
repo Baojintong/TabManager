@@ -19,11 +19,11 @@
             </template>
           </a-button>
 
-          <a-button type="ghost" shape="circle" size="large" class="button_print">
+<!--          <a-button type="ghost" shape="circle" size="large" class="button_print">
             <template #icon>
               <PrinterOutlined v-on:click="printItem(item)"/>
             </template>
-          </a-button>
+          </a-button>-->
         </div>
       </div>
     </div>
